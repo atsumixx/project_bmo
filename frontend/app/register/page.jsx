@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import { supabase } from "@/lib/supabase";
@@ -32,6 +33,7 @@ export default function RegisterPage() {
   });
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const strength = Math.min(password.length / 10, 1);
 
@@ -85,6 +87,10 @@ export default function RegisterPage() {
         : "Account created. Check your email to confirm your registration.";
 
       setStatus({ type: "success", message });
+
+      if (data.session) {
+        router.push("/dashboard");
+      }
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
     } finally {

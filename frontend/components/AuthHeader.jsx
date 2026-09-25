@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import UserMenu from "./UserMenu";
 
 const NAV_LINKS = [
   { href: "/#about", label: "Overview" },
@@ -48,22 +49,18 @@ export default function AuthHeader() {
               {link.label}
             </a>
           ))}
-          <Link
-            href="/login"
-            className="tactile-btn px-5 py-2 rounded-full text-xs font-bold tracking-wide text-white bg-primary shadow-neu-sm flex items-center gap-1.5"
-          >
-            <span className="material-symbols-outlined text-sm">login</span>
-            Log In
-          </Link>
         </nav>
 
-        <Link
-          href="/#specs"
-          className="tactile-btn hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-on-surface-variant bg-surface shadow-neu-sm"
-        >
-          <span className="material-symbols-outlined text-sm">visibility</span>
-          Explore System
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/#specs"
+            className="tactile-btn hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-on-surface-variant bg-surface shadow-neu-sm"
+          >
+            <span className="material-symbols-outlined text-sm">visibility</span>
+            Explore System
+          </Link>
+          <UserMenu variant="compact" />
+        </div>
       </div>
     </header>
   );

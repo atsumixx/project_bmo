@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import AuthModal from "./AuthModal";
+import UserMenu from "./UserMenu";
 
 const NAV_LINKS = [
   { href: "#about", label: "Overview" },
@@ -11,7 +12,6 @@ const NAV_LINKS = [
   { href: "#pillars", label: "Architecture" },
   { href: "#technology", label: "Technology" },
   { href: "#impact", label: "Research & Impact" },
-  { href: "/login", label: "Log In", icon: "login" },
 ];
 
 export default function Header() {
@@ -192,6 +192,10 @@ export default function Header() {
               </a>
             ))}
           </nav>
+
+          <div className="hidden lg:block">
+            <UserMenu />
+          </div>
         </div>
       </header>
     </>

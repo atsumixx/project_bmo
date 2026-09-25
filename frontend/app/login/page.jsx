@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import { supabase } from "@/lib/supabase";
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "", role: "patron" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "idle", message: "" });
+  const router = useRouter();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -38,6 +40,7 @@ export default function LoginPage() {
       localStorage.setItem("bmo_user", JSON.stringify(data.user));
       localStorage.setItem("bmo_token", data.session?.access_token || "");
       setStatus({ type: "success", message: "Login successful." });
+      router.push("/dashboard");
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to sign in." });
     } finally {

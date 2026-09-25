@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 function getEmailHealth(email) {
@@ -40,6 +41,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
   const [lastName, setLastName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "idle", message: "" });
+  const router = useRouter();
 
   const emailCheck = getEmailHealth(email);
 
@@ -100,7 +102,10 @@ export default function AuthModal({ isOpen, mode, onClose }) {
       localStorage.setItem("bmo_user", JSON.stringify(data.user));
       localStorage.setItem("bmo_token", data.session?.access_token || "");
       setStatus({ type: "success", message: "Login successful." });
-      window.setTimeout(onClose, 800);
+      window.setTimeout(() => {
+        onClose();
+        router.push("/dashboard");
+      }, 600);
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to sign in." });
     } finally {
@@ -137,7 +142,15 @@ export default function AuthModal({ isOpen, mode, onClose }) {
         : "Account created. Check your email to confirm your registration.";
 
       setStatus({ type: "success", message });
-      window.setTimeout(onClose, 800);
+
+      if (data.session) {
+        window.setTimeout(() => {
+          onClose();
+          router.push("/dashboard");
+        }, 600);
+      } else {
+        window.setTimeout(onClose, 1500);
+      }
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
     } finally {
