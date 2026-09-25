@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #edf2f7;
+  color: #0e2942;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-padding-top: 6.5rem;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Floating breathing animation for hero emblem */
+@keyframes heroFloat {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.6deg);
+  }
+}
+.animate-float {
+  animation: heroFloat 6s ease-in-out infinite;
+}
+
+/* Bigger, slower breathing float for the larger hero kiosk */
+@keyframes heroFloatLg {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(-0.8deg);
+  }
+}
+.animate-float-lg {
+  animation: heroFloatLg 7s ease-in-out infinite;
+}
+
+/* Ambient soft halo breathing */
+@keyframes ambientGlow {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translate(-50%, 0) scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: translate(-50%, -10px) scale(1.06);
+  }
+}
+.animate-ambient {
+  animation: ambientGlow 9s ease-in-out infinite;
+}
+
+/* Water-like swaying & floating animations for neumorphic blocks */
+@keyframes waterDrift1 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate3d(18px, -24px, 0) rotate(1.8deg) scale(1.03);
+  }
+  50% {
+    transform: translate3d(-12px, -38px, 0) rotate(-1.2deg) scale(0.98);
+  }
+  75% {
+    transform: translate3d(-22px, -14px, 0) rotate(0.9deg) scale(1.02);
+  }
+}
+
+@keyframes waterDrift2 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-1deg) scale(1);
+  }
+  33% {
+    transform: translate3d(-26px, 20px, 0) rotate(2deg) scale(1.04);
+  }
+  66% {
+    transform: translate3d(20px, -28px, 0) rotate(-2.4deg) scale(0.97);
+  }
+}
+
+@keyframes waterDrift3 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(1.5deg) scale(1);
+  }
+  30% {
+    transform: translate3d(22px, -18px, 0) rotate(-1.5deg) scale(0.98);
+  }
+  70% {
+    transform: translate3d(-16px, 22px, 0) rotate(2.2deg) scale(1.03);
+  }
+}
+
+@keyframes waterDrift4 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg) scale(1);
+  }
+  50% {
+    transform: translate3d(-24px, -30px, 0) rotate(1.6deg) scale(1.04);
+  }
+}
+
+@keyframes contourBreathe {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.025) translateY(-8px);
+  }
+}
+
+.drift-block-1 {
+  animation: waterDrift1 20s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+.drift-block-2 {
+  animation: waterDrift2 26s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+.drift-block-3 {
+  animation: waterDrift3 23s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+.drift-block-4 {
+  animation: waterDrift4 30s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+.contour-animated {
+  animation: contourBreathe 14s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Gentle pulsing highlight on the primary CTA */
+@keyframes deployPulse {
+  0%,
+  100% {
+    box-shadow: 8px 8px 20px #d1dde6, -8px -8px 20px #ffffff;
+  }
+  50% {
+    box-shadow: 8px 8px 24px #cad8e3, -8px -8px 24px #ffffff,
+      0 0 16px rgba(103, 213, 235, 0.4);
+  }
+}
+.animate-deploy-btn {
+  animation: deployPulse 4s ease-in-out infinite;
+}
+
+/* Staggered entrance animation classes */
+.fade-up {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Neumorphic 3D card hover & tilt transitions */
+.interactive-card {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.35s ease, border-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+.interactive-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 14px 14px 30px #cbd7e0, -14px -14px 30px #ffffff;
+  border-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Tactile micro-press for neumorphic buttons */
+.tactile-btn {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.tactile-btn:hover {
+  transform: translateY(-1px);
+}
+.tactile-btn:active {
+  transform: translateY(1.5px) scale(0.99);
+  box-shadow: inset 3px 3px 6px #cad7e2, inset -3px -3px 6px #ffffff !important;
+}
+
+/* Interactive sliding pill indicator transitions */
+.sliding-pill-indicator {
+  transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease;
+  will-change: transform, width;
+}
+
+/* Waveform bars in the kiosk screen readout */
+@keyframes waveformPulse {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+.animate-waveform {
+  animation: waveformPulse 1.6s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+/* Number ticker transition helper */
+.number-ticker {
+  display: inline-block;
+  transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+}
+.number-ticker.updating {
+  transform: translateY(-4px) scale(1.04);
+  opacity: 0.7;
+}
+
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .animate-float,
+  .animate-float-lg,
+  .animate-ambient,
+  .animate-deploy-btn,
+  .animate-waveform,
+  .drift-block-1,
+  .drift-block-2,
+  .drift-block-3,
+  .drift-block-4,
+  .contour-animated,
+  .sliding-pill-indicator {
+    animation: none !important;
+    transition: none !important;
+  }
+}
