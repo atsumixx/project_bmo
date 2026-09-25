@@ -2,38 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const COMMON_EMAIL_DOMAINS = new Set([
-  "gmail.com",
-  "yahoo.com",
-  "outlook.com",
-  "hotmail.com",
-  "icloud.com",
-  "live.com",
-  "msn.com",
-  "aol.com",
-  "protonmail.com",
-  "gmx.com",
-  "mail.com",
-  "edu.ph",
-  "gov.ph",
-  "com.ph",
-  "org.ph",
-  "up.edu.ph",
-  "dlsu.edu.ph",
-  "ust.edu.ph",
-  "admu.edu.ph",
-  "ateneo.edu",
-  "up.edu.ph",
-  "mit.edu",
-  "harvard.edu",
-  "stanford.edu",
-  "gov", 
-  "edu",
-  "org",
-  "com",
-  "net",
-]);
-
 function getEmailHealth(email) {
   if (!email) {
     return { status: "idle", valid: false, message: "" };
@@ -51,40 +19,8 @@ function getEmailHealth(email) {
     return { status: "invalid", valid: false, message: "Email is incomplete." };
   }
 
-  const suspiciousLocalParts = [
-    "test",
-    "demo",
-    "example",
-    "sample",
-    "user",
-    "admin",
-    "fake",
-    "placeholder",
-    "noreply",
-    "no-reply",
-    "guest",
-    "newuser",
-  ];
-
-  const baseLocal = localPart.split(/[._+-]/)[0];
-  if (suspiciousLocalParts.includes(baseLocal)) {
-    return {
-      status: "suspicious",
-      valid: false,
-      message: "This looks like a placeholder or test address.",
-    };
-  }
-
-  const isCommonDomain =
-    COMMON_EMAIL_DOMAINS.has(domain) ||
-    Array.from(COMMON_EMAIL_DOMAINS).some((commonDomain) => domain.endsWith(`.${commonDomain}`) || domain === commonDomain);
-
-  if (!isCommonDomain) {
-    return {
-      status: "uncommon",
-      valid: false,
-      message: "Domain looks uncommon—double-check it's a real organization or institution email.",
-    };
+  if (domain.split(".").filter(Boolean).length < 2) {
+    return { status: "invalid", valid: false, message: "Email domain is incomplete." };
   }
 
   return { status: "valid", valid: true, message: "Looks like a valid email." };
@@ -97,6 +33,12 @@ export default function AuthModal({ isOpen, mode, onClose }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: "idle", message: "" });
 
   const emailCheck = getEmailHealth(email);
 
@@ -116,6 +58,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
 
   useEffect(() => {
     setActiveMode(mode);
+    setStatus({ type: "idle", message: "" });
   }, [mode, isOpen]);
 
   useEffect(() => {
@@ -138,6 +81,68 @@ export default function AuthModal({ isOpen, mode, onClose }) {
   if (!isOpen) return null;
 
   const isLogin = activeMode === "login";
+
+  const handleLogin = async () => {
+    setIsSubmitting(true);
+    setStatus({ type: "idle", message: "" });
+
+    try {
+      const response = await fetch("http://localhost:8000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Login failed.");
+      }
+
+      localStorage.setItem("bmo_user", JSON.stringify(data.user));
+      localStorage.setItem("bmo_token", data.token || "");
+      setStatus({ type: "success", message: data.message });
+      window.setTimeout(onClose, 800);
+    } catch (error) {
+      setStatus({ type: "error", message: error.message || "Unable to sign in." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    setIsSubmitting(true);
+    setStatus({ type: "idle", message: "" });
+
+    try {
+      const response = await fetch("http://localhost:8000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+          role: "patron",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to create account.");
+      }
+
+      localStorage.setItem("bmo_user", JSON.stringify(data.user));
+      localStorage.setItem("bmo_token", data.token || "");
+      setStatus({ type: "success", message: data.message });
+      window.setTimeout(onClose, 800);
+    } catch (error) {
+      setStatus({ type: "error", message: error.message || "Unable to create account." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -177,7 +182,10 @@ export default function AuthModal({ isOpen, mode, onClose }) {
           <div className="flex rounded-full bg-surface p-1.5 shadow-neu-inset text-xs font-semibold">
             <button
               type="button"
-              onClick={() => setActiveMode("login")}
+              onClick={() => {
+                setActiveMode("login");
+                setStatus({ type: "idle", message: "" });
+              }}
               className={`flex-1 rounded-full px-3 py-2.5 transition-all ${
                 isLogin ? "bg-primary text-white shadow-neu-sm" : "text-on-surface-variant"
               }`}
@@ -189,7 +197,10 @@ export default function AuthModal({ isOpen, mode, onClose }) {
             </button>
             <button
               type="button"
-              onClick={() => setActiveMode("register")}
+              onClick={() => {
+                setActiveMode("register");
+                setStatus({ type: "idle", message: "" });
+              }}
               className={`flex-1 rounded-full px-3 py-2.5 transition-all ${
                 !isLogin ? "bg-primary text-white shadow-neu-sm" : "text-on-surface-variant"
               }`}
@@ -213,6 +224,8 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <span className="material-symbols-outlined text-base text-primary">mail</span>
                   <input
                     type="email"
+                    value={loginEmail}
+                    onChange={(event) => setLoginEmail(event.target.value)}
                     placeholder="patron.juan@bmo.gov.ph"
                     className="w-full bg-transparent text-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none"
                   />
@@ -232,6 +245,8 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <span className="material-symbols-outlined text-base text-primary">lock</span>
                   <input
                     type={showPassword ? "text" : "password"}
+                    value={loginPassword}
+                    onChange={(event) => setLoginPassword(event.target.value)}
                     placeholder="••••••••••••"
                     className="w-full bg-transparent text-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none"
                   />
@@ -247,26 +262,20 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                 </div>
               </div>
 
-              <label className="flex items-center justify-between gap-3 text-xs font-semibold text-on-surface">
-                <span className="flex items-center gap-2">
-                  <span
-                    className={`relative block h-5 w-9 rounded-full transition-colors ${
-                      true ? "bg-primary" : "bg-outline-soft"
-                    }`}
-                  >
-                    <span className="absolute left-1 top-1 h-3 w-3 rounded-full bg-white transition-transform translate-x-4" />
-                  </span>
-                  Remember station
-                </span>
-                <span className="font-mono text-[10px] text-on-surface-variant">Audio ON</span>
-              </label>
+              {status.message ? (
+                <p className={`text-xs font-medium ${status.type === "success" ? "text-green-600" : "text-red-500"}`}>
+                  {status.message}
+                </p>
+              ) : null}
 
               <button
                 type="button"
-                className="tactile-btn w-full rounded-2xl bg-gradient-to-r from-primary to-accent-cyan px-4 py-3.5 text-sm font-bold text-white shadow-neu-sm"
+                onClick={handleLogin}
+                disabled={isSubmitting || !loginEmail || !loginPassword}
+                className="tactile-btn w-full rounded-2xl bg-gradient-to-r from-primary to-accent-cyan px-4 py-3.5 text-sm font-bold text-white shadow-neu-sm disabled:opacity-60"
               >
                 <span className="flex items-center justify-center gap-2">
-                  Sign In
+                  {isSubmitting ? "Signing In..." : "Sign In"}
                   <span className="material-symbols-outlined text-base">arrow_forward</span>
                 </span>
               </button>
@@ -281,6 +290,8 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <div className="rounded-2xl bg-surface px-4 py-3 shadow-neu-inset">
                     <input
                       type="text"
+                      value={firstName}
+                      onChange={(event) => setFirstName(event.target.value)}
                       placeholder="Juan"
                       className="w-full bg-transparent text-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none"
                     />
@@ -293,6 +304,8 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <div className="rounded-2xl bg-surface px-4 py-3 shadow-neu-inset">
                     <input
                       type="text"
+                      value={lastName}
+                      onChange={(event) => setLastName(event.target.value)}
                       placeholder="Dela Cruz"
                       className="w-full bg-transparent text-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none"
                     />
@@ -421,15 +434,22 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                 )}
               </div>
 
+              {status.message ? (
+                <p className={`text-xs font-medium ${status.type === "success" ? "text-green-600" : "text-red-500"}`}>
+                  {status.message}
+                </p>
+              ) : null}
+
               <button
                 type="button"
-                disabled={!isPasswordReady || !isEmailReady}
+                onClick={handleRegister}
+                disabled={!isPasswordReady || !isEmailReady || !firstName || !lastName || isSubmitting}
                 className={`tactile-btn w-full rounded-2xl bg-gradient-to-r from-primary to-accent-cyan px-4 py-3.5 text-sm font-bold text-white shadow-neu-sm transition-opacity ${
-                  isPasswordReady && isEmailReady ? "opacity-100" : "cursor-not-allowed opacity-50"
+                  isPasswordReady && isEmailReady && firstName && lastName && !isSubmitting ? "opacity-100" : "cursor-not-allowed opacity-50"
                 }`}
               >
                 <span className="flex items-center justify-center gap-2">
-                  Create Account
+                  {isSubmitting ? "Creating Account..." : "Create Account"}
                   <span className="material-symbols-outlined text-base">person_add</span>
                 </span>
               </button>
