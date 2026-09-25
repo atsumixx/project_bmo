@@ -14,6 +14,7 @@ function initialsFrom(user) {
 export default function UserMenu({ variant = "full" }) {
   const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
   const ref = useRef(null);
   const router = useRouter();
 
@@ -21,12 +22,17 @@ export default function UserMenu({ variant = "full" }) {
     function onClick(event) {
       if (ref.current && !ref.current.contains(event.target)) {
         setOpen(false);
+        setConfirmingLogout(false);
       }
     }
 
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
+
+  useEffect(() => {
+    if (!open) setConfirmingLogout(false);
+  }, [open]);
 
   if (!user) {
     return (
@@ -46,6 +52,7 @@ export default function UserMenu({ variant = "full" }) {
 
   const handleSignOut = async () => {
     setOpen(false);
+    setConfirmingLogout(false);
     await signOut();
     router.push("/");
   };
@@ -74,28 +81,55 @@ export default function UserMenu({ variant = "full" }) {
 
       {open && (
         <div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl bg-surface shadow-none border border-white/20 p-2 z-50 origin-top-right animate-[menuIn_0.15s_ease-out]">
-          <div className="px-3 py-2.5 border-b border-white/60 mb-1">
-            <p className="text-xs font-bold text-on-surface truncate">{firstName}</p>
-            <p className="text-[11px] text-on-surface-variant truncate">{user.email}</p>
-          </div>
+          {!confirmingLogout ? (
+            <>
+              <div className="px-3 py-2.5 border-b border-white/60 mb-1">
+                <p className="text-xs font-bold text-on-surface truncate">{firstName}</p>
+                <p className="text-[11px] text-on-surface-variant truncate">{user.email}</p>
+              </div>
 
-          <Link
-            href="/dashboard"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-on-surface hover:bg-surface-low transition-colors"
-          >
-            <span className="material-symbols-outlined text-base text-on-surface-variant">dashboard</span>
-            Dashboard
-          </Link>
+              <Link
+                href="/dashboard"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-on-surface hover:bg-surface-low transition-colors"
+              >
+                <span className="material-symbols-outlined text-base text-on-surface-variant">dashboard</span>
+                Dashboard
+              </Link>
 
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-red-500 hover:bg-red-50 transition-colors"
-          >
-            <span className="material-symbols-outlined text-base">logout</span>
-            Log out
-          </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingLogout(true)}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-red-500 hover:bg-red-50 transition-colors"
+              >
+                <span className="material-symbols-outlined text-base">logout</span>
+                Log out
+              </button>
+            </>
+          ) : (
+            <div className="p-2 space-y-2">
+              <p className="px-1 pt-1 text-xs font-semibold text-on-surface">Log out of BMO?</p>
+              <p className="px-1 pb-1 text-[11px] text-on-surface-variant leading-relaxed">
+                You&apos;ll need to sign in again to access your dashboard.
+              </p>
+              <div className="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setConfirmingLogout(false)}
+                  className="flex-1 py-2 rounded-xl text-xs font-semibold text-on-surface-variant bg-surface shadow-neu-inset"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex-1 py-2 rounded-xl text-xs font-bold text-white bg-red-500 hover:bg-red-600 transition-colors"
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

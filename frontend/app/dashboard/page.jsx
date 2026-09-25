@@ -27,6 +27,7 @@ function DashboardContent() {
   const [passwordForm, setPasswordForm] = useState({ password: "", confirm: "" });
   const [pwStatus, setPwStatus] = useState({ type: "idle", message: "" });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -42,6 +43,10 @@ function DashboardContent() {
         phone: user.user_metadata?.phone || "",
       });
     }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) setConfirmingLogout(false);
   }, [user]);
 
   useEffect(() => {
@@ -132,17 +137,37 @@ function DashboardContent() {
             </h1>
           </div>
 
-          <button
-            type="button"
-            onClick={async () => {
-              await signOut();
-              router.push("/");
-            }}
-            className="tactile-btn self-start sm:self-auto px-4 py-2 rounded-full text-xs font-semibold text-red-500 bg-surface shadow-neu-sm flex items-center gap-1.5"
-          >
-            <span className="material-symbols-outlined text-sm">logout</span>
-            Log out
-          </button>
+          {!confirmingLogout ? (
+            <button
+              type="button"
+              onClick={() => setConfirmingLogout(true)}
+              className="tactile-btn self-start sm:self-auto px-4 py-2 rounded-full text-xs font-semibold text-red-500 bg-surface shadow-neu-sm flex items-center gap-1.5"
+            >
+              <span className="material-symbols-outlined text-sm">logout</span>
+              Log out
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 self-start sm:self-auto rounded-full bg-surface shadow-neu p-1.5">
+              <button
+                type="button"
+                onClick={() => setConfirmingLogout(false)}
+                className="px-3 py-2 rounded-full text-xs font-semibold text-on-surface-variant bg-surface shadow-neu-inset"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setConfirmingLogout(false);
+                  await signOut();
+                  router.push("/");
+                }}
+                className="px-3 py-2 rounded-full text-xs font-bold text-white bg-red-500 hover:bg-red-600 transition-colors"
+              >
+                Confirm
+              </button>
+            </div>
+          )}
         </FadeUp>
 
         <FadeUp
