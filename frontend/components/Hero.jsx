@@ -14,7 +14,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface shadow-neu-inset text-xs font-mono text-on-surface-variant"
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-outline-soft">2025 · BSIT Capstone</span>
+            <span className="text-outline-soft">2026 · BSIT Capstone</span>
             <span className="text-outline-soft">/</span>
             <span className="font-semibold text-primary">Filipino Sign Language</span>
           </FadeUp>
