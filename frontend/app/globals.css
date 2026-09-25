@@ -12,6 +12,11 @@ html {
   scroll-padding-top: 6.5rem;
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
