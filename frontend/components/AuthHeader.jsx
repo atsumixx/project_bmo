@@ -3,7 +3,9 @@ import Link from "next/link";
 
 const NAV_LINKS = [
   { href: "/#about", label: "Overview" },
+  { href: "/#demo", label: "Demo" },
   { href: "/#pillars", label: "Architecture" },
+  { href: "/#technology", label: "Technology" },
   { href: "/#impact", label: "Research & Impact" },
 ];
 

@@ -35,6 +35,20 @@ input[type="password"]::-ms-clear {
   -webkit-font-smoothing: antialiased;
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.tech-node {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* Floating breathing animation for hero emblem */
 @keyframes heroFloat {
   0%,
@@ -275,7 +289,8 @@ input[type="password"]::-ms-clear {
   .drift-block-3,
   .drift-block-4,
   .contour-animated,
-  .sliding-pill-indicator {
+  .sliding-pill-indicator,
+  .tech-node {
     animation: none !important;
     transition: none !important;
   }

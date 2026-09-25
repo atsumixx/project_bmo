@@ -7,7 +7,9 @@ import AuthModal from "./AuthModal";
 const NAV_LINKS = [
   { href: "#about", label: "Overview" },
   { href: "#specs", label: "Kiosk" },
+  { href: "#demo", label: "Demo" },
   { href: "#pillars", label: "Architecture" },
+  { href: "#technology", label: "Technology" },
   { href: "#impact", label: "Research & Impact" },
   { href: "/login", label: "Log In", icon: "login" },
 ];

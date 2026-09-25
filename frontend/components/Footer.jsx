@@ -19,7 +19,7 @@ export default function Footer() {
           <span className="text-xs text-on-surface-variant font-mono">R.A. 11106 Compliant</span>
         </div>
         <div className="text-xs text-on-surface-variant font-mono text-center sm:text-right">
-          © 2025 Team SHIELD • BS Information Technology (BSIT)
+          © 2026 Team SHIELD • BS Information Technology (BSIT)
         </div>
       </div>
     </footer>
