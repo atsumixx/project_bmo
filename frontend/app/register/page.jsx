@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
+import { supabase } from "@/lib/supabase";
 
 const ROLES = [
   { id: "patron", icon: "accessibility_new", label: "Patron" },
@@ -56,33 +57,34 @@ export default function RegisterPage() {
     setStatus({ type: "idle", message: "" });
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const { data, error } = await supabase.auth.signUp({
+        email: form.email.trim().toLowerCase(),
+        password,
+        options: {
+          data: {
+            first_name: form.firstName,
+            last_name: form.lastName,
+            phone: form.phone,
+            role,
+            fsl_mode: fslMode,
+            deaf_mode: deafMode,
+            hand_cues: handCues,
+          },
         },
-        body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          phone: form.phone,
-          password,
-          role,
-          fslMode,
-          deafMode,
-          handCues,
-        }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Unable to create account.");
+      if (error) {
+        throw error;
       }
 
       localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.token || "");
-      setStatus({ type: "success", message: data.message });
+      localStorage.setItem("bmo_token", data.session?.access_token || "");
+
+      const message = data.session
+        ? "Account created successfully."
+        : "Account created. Check your email to confirm your registration.";
+
+      setStatus({ type: "success", message });
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
     } finally {

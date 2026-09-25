@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin !== '' && preg_match('/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i', $origin)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Vary: Origin');
-}
+// ---------------------------------------------------------------------
+// CORS
+// ---------------------------------------------------------------------
+$allowedOrigin = getenv('FRONTEND_ORIGIN') ?: 'http://localhost:3000';
+header('Access-Control-Allow-Origin: ' . $allowedOrigin);
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Access-Control-Allow-Credentials: true');
@@ -24,28 +24,45 @@ function sendJson(int $statusCode, array $payload): void
     exit;
 }
 
-$databaseDir = __DIR__ . '/data';
-if (!is_dir($databaseDir)) {
-    mkdir($databaseDir, 0777, true);
+// ---------------------------------------------------------------------
+// Database connection (Supabase Postgres)
+//
+// Configure via environment variables (e.g. in a .env loaded by your
+// process manager, or exported before `php -S`):
+//
+//   SUPABASE_DB_HOST      e.g. aws-0-ap-southeast-1.pooler.supabase.com
+//   SUPABASE_DB_PORT      e.g. 6543 (transaction pooler) or 5432 (direct)
+//   SUPABASE_DB_NAME      usually "postgres"
+//   SUPABASE_DB_USER      e.g. postgres.xxxxxxxxxxxx (pooler) or postgres
+//   SUPABASE_DB_PASSWORD  your database password
+//
+// These come from: Supabase dashboard -> Project Settings -> Database
+// -> Connection string / Connection pooling.
+// ---------------------------------------------------------------------
+
+$dbHost = getenv('SUPABASE_DB_HOST') ?: '';
+$dbPort = getenv('SUPABASE_DB_PORT') ?: '6543';
+$dbName = getenv('SUPABASE_DB_NAME') ?: 'postgres';
+$dbUser = getenv('SUPABASE_DB_USER') ?: '';
+$dbPassword = getenv('SUPABASE_DB_PASSWORD') ?: '';
+
+if ($dbHost === '' || $dbUser === '' || $dbPassword === '') {
+    sendJson(500, [
+        'success' => false,
+        'message' => 'Database is not configured. Set SUPABASE_DB_HOST, SUPABASE_DB_USER, and SUPABASE_DB_PASSWORD as environment variables.',
+    ]);
 }
 
-$databasePath = $databaseDir . '/users.sqlite';
-
 try {
-    $db = new PDO('sqlite:' . $databasePath);
+    $dsn = sprintf(
+        'pgsql:host=%s;port=%s;dbname=%s;sslmode=require',
+        $dbHost,
+        $dbPort,
+        $dbName
+    );
+    $db = new PDO($dsn, $dbUser, $dbPassword);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-    $db->exec('CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        phone TEXT,
-        password_hash TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT "patron",
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )');
 } catch (Throwable $e) {
     sendJson(500, [
         'success' => false,
@@ -53,6 +70,22 @@ try {
         'error' => $e->getMessage(),
     ]);
 }
+
+// Table is expected to already exist in Supabase (created via SQL editor):
+//
+//   create table public.users (
+//     id serial primary key,
+//     first_name text not null,
+//     last_name text not null,
+//     email text not null unique,
+//     phone text,
+//     password_hash text not null,
+//     role text not null default 'patron',
+//     created_at timestamptz not null default now()
+//   );
+//
+// No CREATE TABLE IF NOT EXISTS here — Supabase tables are managed via
+// migrations/SQL editor, not auto-created by the app.
 
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
@@ -62,6 +95,7 @@ if ($method === 'GET' && $uri === '/') {
         'success' => true,
         'service' => 'Project BMO PHP API',
         'message' => 'Backend is running.',
+        'database' => 'supabase-postgres',
         'endpoints' => [
             'POST /api/auth/register',
             'POST /api/auth/login',
@@ -112,27 +146,40 @@ if ($uri === '/api/auth/register') {
 
     $role = in_array($role, ['patron', 'teller', 'desk_teller', 'civic_desk', 'research'], true) ? $role : 'patron';
 
-    $existing = $db->prepare('SELECT id FROM users WHERE email = :email');
-    $existing->execute([':email' => $email]);
-    if ($existing->fetch()) {
-        sendJson(409, [
+    try {
+        $existing = $db->prepare('SELECT id FROM users WHERE email = :email');
+        $existing->execute([':email' => $email]);
+        if ($existing->fetch()) {
+            sendJson(409, [
+                'success' => false,
+                'message' => 'An account with this email already exists.',
+            ]);
+        }
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $statement = $db->prepare(
+            'INSERT INTO users (first_name, last_name, email, phone, password_hash, role)
+             VALUES (:first_name, :last_name, :email, :phone, :password_hash, :role)
+             RETURNING id'
+        );
+        $statement->execute([
+            ':first_name' => $firstName,
+            ':last_name' => $lastName,
+            ':email' => $email,
+            ':phone' => $phone,
+            ':password_hash' => $passwordHash,
+            ':role' => $role,
+        ]);
+
+        $userId = (int) $statement->fetchColumn();
+    } catch (Throwable $e) {
+        sendJson(500, [
             'success' => false,
-            'message' => 'An account with this email already exists.',
+            'message' => 'Could not create account.',
+            'error' => $e->getMessage(),
         ]);
     }
 
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-    $statement = $db->prepare('INSERT INTO users (first_name, last_name, email, phone, password_hash, role) VALUES (:first_name, :last_name, :email, :phone, :password_hash, :role)');
-    $statement->execute([
-        ':first_name' => $firstName,
-        ':last_name' => $lastName,
-        ':email' => $email,
-        ':phone' => $phone,
-        ':password_hash' => $passwordHash,
-        ':role' => $role,
-    ]);
-
-    $userId = (int) $db->lastInsertId();
     $token = bin2hex(random_bytes(16));
 
     sendJson(201, [
@@ -161,9 +208,20 @@ if ($uri === '/api/auth/login') {
         ]);
     }
 
-    $statement = $db->prepare('SELECT id, first_name, last_name, email, phone, role, password_hash FROM users WHERE email = :email');
-    $statement->execute([':email' => $email]);
-    $user = $statement->fetch();
+    try {
+        $statement = $db->prepare(
+            'SELECT id, first_name, last_name, email, phone, role, password_hash
+             FROM users WHERE email = :email'
+        );
+        $statement->execute([':email' => $email]);
+        $user = $statement->fetch();
+    } catch (Throwable $e) {
+        sendJson(500, [
+            'success' => false,
+            'message' => 'Login failed.',
+            'error' => $e->getMessage(),
+        ]);
+    }
 
     if (!$user || !password_verify($password, (string) $user['password_hash'])) {
         sendJson(401, [

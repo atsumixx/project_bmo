@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 function getEmailHealth(email) {
   if (!email) {
@@ -87,21 +88,18 @@ export default function AuthModal({ isOpen, mode, onClose }) {
     setStatus({ type: "idle", message: "" });
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginEmail.trim().toLowerCase(),
+        password: loginPassword,
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Login failed.");
+      if (error) {
+        throw error;
       }
 
       localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.token || "");
-      setStatus({ type: "success", message: data.message });
+      localStorage.setItem("bmo_token", data.session?.access_token || "");
+      setStatus({ type: "success", message: "Login successful." });
       window.setTimeout(onClose, 800);
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to sign in." });
@@ -115,27 +113,30 @@ export default function AuthModal({ isOpen, mode, onClose }) {
     setStatus({ type: "idle", message: "" });
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-          role: "patron",
-        }),
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            role: "patron",
+          },
+        },
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Unable to create account.");
+      if (error) {
+        throw error;
       }
 
       localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.token || "");
-      setStatus({ type: "success", message: data.message });
+      localStorage.setItem("bmo_token", data.session?.access_token || "");
+
+      const message = data.session
+        ? "Account created successfully."
+        : "Account created. Check your email to confirm your registration.";
+
+      setStatus({ type: "success", message });
       window.setTimeout(onClose, 800);
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });

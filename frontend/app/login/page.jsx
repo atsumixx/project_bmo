@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const [role, setRole] = useState("patron");
@@ -25,27 +26,18 @@ export default function LoginPage() {
     setStatus({ type: "idle", message: "" });
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-          role: role,
-        }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Login failed.");
+      if (error) {
+        throw error;
       }
 
       localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.token || "");
-      setStatus({ type: "success", message: data.message });
+      localStorage.setItem("bmo_token", data.session?.access_token || "");
+      setStatus({ type: "success", message: "Login successful." });
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to sign in." });
     } finally {
