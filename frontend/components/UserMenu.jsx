@@ -11,7 +11,7 @@ function initialsFrom(user) {
   return (first + last).toUpperCase() || user?.email?.[0]?.toUpperCase() || "U";
 }
 
-export default function UserMenu({ variant = "full" }) {
+export default function UserMenu({ variant = "full", onLoginClick }) {
   const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [confirmingLogout, setConfirmingLogout] = useState(false);
@@ -35,13 +35,21 @@ export default function UserMenu({ variant = "full" }) {
   }, [open]);
 
   if (!user) {
+    const className = `tactile-btn px-5 py-2 rounded-full text-xs font-bold tracking-wide text-white bg-primary shadow-neu-sm flex items-center gap-1.5 ${
+      variant === "compact" ? "px-4" : ""
+    }`;
+
+    if (onLoginClick) {
+      return (
+        <button type="button" onClick={onLoginClick} className={className}>
+          <span className="material-symbols-outlined text-sm">login</span>
+          Log In
+        </button>
+      );
+    }
+
     return (
-      <Link
-        href="/login"
-        className={`tactile-btn px-5 py-2 rounded-full text-xs font-bold tracking-wide text-white bg-primary shadow-neu-sm flex items-center gap-1.5 ${
-          variant === "compact" ? "px-4" : ""
-        }`}
-      >
+      <Link href="/login" className={className}>
         <span className="material-symbols-outlined text-sm">login</span>
         Log In
       </Link>

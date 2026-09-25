@@ -194,7 +194,7 @@ export default function Header() {
           </nav>
 
           <div className="hidden lg:block">
-            <UserMenu />
+            <UserMenu onLoginClick={() => setAuthModal({ isOpen: true, mode: "login" })} />
           </div>
         </div>
       </header>
