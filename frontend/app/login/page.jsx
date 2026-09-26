@@ -140,9 +140,9 @@ export default function LoginPage() {
                 <label className="text-[11px] font-mono uppercase tracking-wide text-on-surface-variant">
                   Passcode
                 </label>
-                <a href="#" className="text-[11px] font-semibold text-primary hover:underline">
+                <Link href="/forgot-password" className="text-[11px] font-semibold text-primary hover:underline">
                   Forgot?
-                </a>
+                </Link>
               </div>
               <AuthField
                 icon="lock"

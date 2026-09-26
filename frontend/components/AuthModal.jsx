@@ -127,6 +127,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
             last_name: lastName,
             role: "patron",
           },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -134,12 +135,14 @@ export default function AuthModal({ isOpen, mode, onClose }) {
         throw error;
       }
 
-      localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.session?.access_token || "");
+      if (data.session) {
+        localStorage.setItem("bmo_user", JSON.stringify(data.user));
+        localStorage.setItem("bmo_token", data.session?.access_token || "");
+      }
 
       const message = data.session
         ? "Account created successfully."
-        : "Account created. Check your email to confirm your registration.";
+        : "Almost there — check your email and tap the sign-in link we sent you.";
 
       setStatus({ type: "success", message });
 
@@ -148,8 +151,6 @@ export default function AuthModal({ isOpen, mode, onClose }) {
           onClose();
           router.push("/dashboard");
         }, 600);
-      } else {
-        window.setTimeout(onClose, 1500);
       }
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
@@ -251,7 +252,14 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <label className="text-[11px] font-mono uppercase tracking-[0.15em] text-on-surface-variant">
                     Passcode
                   </label>
-                  <button type="button" className="text-[11px] font-semibold text-primary hover:underline">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      router.push("/forgot-password");
+                    }}
+                    className="text-[11px] font-semibold text-primary hover:underline"
+                  >
                     Forgot?
                   </button>
                 </div>
