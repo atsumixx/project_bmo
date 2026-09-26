@@ -34,13 +34,13 @@ export default function Footer() {
                   PROJECT BMO
                 </p>
                 <p className="text-[10px] font-mono uppercase tracking-widest text-accent-cyan/80">
-                  Bridging Motions through Oral Communication
+                  Bridging Silence with Physical AI
                 </p>
               </div>
             </div>
 
             <p className="text-sm text-white/60 leading-relaxed max-w-sm">
-              Bridging Motions through Oral Communication.
+              Bridging Silence with Physical AI.
               <br />
               An AI + IoT capstone project for FSL access.
             </p>
