@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import FadeUp from "./FadeUp";
 
 const STATS = [
-  { target: 35, suffix: "ms", label: "Real-Time Edge AI", sub: "Ultra-low latency inference", color: "text-primary" },
+  { target: 100, suffix: "%", label: "Real-Time Edge AI", sub: "On-device inference, no cloud round-trip", color: "text-primary" },
   { target: 100, suffix: "%", label: "Local & Offline", sub: "On-device memory & privacy", color: "text-secondary" },
-  { target: 99.4, suffix: "%", label: "High Accuracy", sub: "Pose estimation fidelity", color: "text-primary" },
+  { target: 1, suffix: "", label: "Prototype Phase", sub: "Undergoing evaluation with Deaf signers", color: "text-primary" },
   { target: 100, suffix: "%", label: "Zero Cloud Dependency", sub: "Total civic data sovereignty", color: "text-on-surface" },
 ];
 
@@ -75,7 +75,7 @@ export default function ImpactStats() {
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-on-surface">
-                Systems Hub Innovation, Engineering, Logic &amp; Development
+                Team SHIELD
               </h3>
               <p className="text-xs text-on-surface-variant font-mono">
                 Team SHIELD • BS Information Technology (BSIT) Capstone Research
@@ -85,7 +85,7 @@ export default function ImpactStats() {
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono px-3.5 py-1.5 rounded-full bg-surface shadow-neu-inset text-primary font-semibold flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Phase II Pilot
+              Capstone Prototype
             </span>
           </div>
         </div>

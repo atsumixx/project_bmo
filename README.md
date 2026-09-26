@@ -1,8 +1,8 @@
 # Project BMO — SHIELD
 
-Bridging Silence with Physical AI — an offline-first, on-device Filipino Sign
-Language (FSL) translator kiosk system, developed by Team SHIELD (BSIT
-Capstone) in compliance with R.A. 11106.
+Bridging Motions through Oral Communication — an offline-first, on-device
+Filipino Sign Language (FSL) translator kiosk system, developed by Team SHIELD
+(BSIT Capstone) and aligned with R.A. 11106.
 
 ## Repository layout
 

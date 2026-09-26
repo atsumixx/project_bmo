@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata = {
   title: "Project BMO — Autonomous FSL Translator Kiosk System",
   description:
-    "Project BMO by Team SHIELD: an offline-first, on-device Filipino Sign Language (FSL) translator kiosk built for Philippine civic counters, hospitals, and academic hubs.",
+    "Project BMO by Team SHIELD: an offline-first, on-device Filipino Sign Language (FSL) translator kiosk concept built for Philippine civic counters, hospitals, and academic hubs.",
 };
 
 export default function RootLayout({ children }) {

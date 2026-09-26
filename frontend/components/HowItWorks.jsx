@@ -13,7 +13,7 @@ const STEPS = [
     icon: "device_hub",
     title: "Recognize",
     description:
-      "An on-device model matches the movement against Filipino Sign Language patterns as they happen.",
+      "An on-device LSTM model, trained on MediaPipe Holistic hand, face, and pose landmarks, matches the movement against Filipino Sign Language patterns as they happen.",
   },
   {
     index: "03",
@@ -32,7 +32,7 @@ export default function HowItWorks() {
           From movement to meaning.
         </h2>
         <p className="text-sm text-on-surface-variant leading-relaxed">
-          Three steps, all of them local, all of them under a tenth of a second.
+          Three steps, all local and designed to keep the interaction immediate and private.
         </p>
       </FadeUp>
 

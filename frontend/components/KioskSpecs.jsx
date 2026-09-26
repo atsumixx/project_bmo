@@ -1,10 +1,10 @@
 import FadeUp from "./FadeUp";
 
 const SPECS = [
-  { icon: "speed", label: "Inference latency", value: "38ms, on-device" },
-  { icon: "translate", label: "Translation", value: "FSL ↔ English, text + speech" },
+  { icon: "speed", label: "Inference", value: "Real-time, on-device" },
+  { icon: "translate", label: "Translation", value: "FSL → Filipino/English, text + speech" },
   { icon: "wifi_off", label: "Connectivity", value: "Fully offline-capable" },
-  { icon: "photo_camera", label: "Input", value: "Depth camera + touchscreen" },
+  { icon: "photo_camera", label: "Input", value: "RGB camera + touchscreen" },
   { icon: "volume_up", label: "Output", value: "Synthesized speech + captions" },
   { icon: "lock", label: "Data handling", value: "Nothing leaves local memory" },
 ];

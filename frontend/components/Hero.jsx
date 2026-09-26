@@ -21,9 +21,9 @@ export default function Hero() {
 
           <FadeUp delay={160} className="space-y-1">
             <h1 className="text-4xl sm:text-5xl lg:text-[3.6rem] font-extrabold text-on-surface tracking-tight leading-[1.08]">
-              <span className="block">Bridging silence</span>
+              <span className="block">Bridging motions</span>
               <span className="block bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
-                with physical AI.
+                through oral communication.
               </span>
             </h1>
           </FadeUp>
@@ -44,15 +44,15 @@ export default function Hero() {
             </div>
             <div>
               <div className="text-on-surface font-bold text-lg">R.A. 11106</div>
-              <div>Compliant</div>
+              <div>Aligned</div>
             </div>
             <div>
               <div className="text-on-surface font-bold text-lg">0</div>
               <div>Cloud dependency</div>
             </div>
             <div>
-              <div className="text-on-surface font-bold text-lg">38ms</div>
-              <div>Local inference</div>
+              <div className="text-on-surface font-bold text-lg">Local</div>
+              <div>On-device inference</div>
             </div>
           </FadeUp>
         </div>

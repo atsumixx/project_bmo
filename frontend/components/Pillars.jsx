@@ -22,8 +22,8 @@ const PILLARS = [
     icon: "memory",
     title: "Edge AI Inference",
     description:
-      "Dedicated on-device Neural Processing Units run skeletal pose estimation and FSL transformers in under 38 milliseconds.",
-    stat: "38ms Local Latency",
+      "A Raspberry Pi 4B+ edge device runs MediaPipe Holistic landmark extraction and an LSTM-based recognition model locally, without sending video to the cloud.",
+    stat: "Raspberry Pi 4B+ Edge Device",
     statIcon: "speed",
     color: "primary",
     delay: 150,
@@ -32,8 +32,8 @@ const PILLARS = [
     icon: "sync_alt",
     title: "Dual Synchronous UI",
     description:
-      "Provides simultaneous, synchronized perspectives: real-time visual FSL confirmation for patrons and synthesized audio with text for civic tellers.",
-    stat: "Zero-Stutter Sync",
+      "Shows the signer a visual confirmation of what was recognized, while the hearing recipient sees text and hears synthesized speech at the same time.",
+    stat: "Synchronized Display",
     statIcon: "devices",
     color: "secondary",
     delay: 250,
@@ -52,8 +52,8 @@ const PILLARS = [
     icon: "gavel",
     title: "Civic Sector Ready",
     description:
-      "Formally aligned with R.A. 11106 accessibility standards, purpose-built for LGU city halls, barangay halls, and public clinics.",
-    stat: "R.A. 11106 Certified",
+      "Designed in alignment with R.A. 11106 accessibility mandates, purpose-built for LGU city halls, barangay halls, and public clinics.",
+    stat: "R.A. 11106 Aligned",
     statIcon: "verified",
     color: "secondary",
     delay: 450,
