@@ -61,8 +61,8 @@ export default function UserMenu({ variant = "full", onLoginClick }) {
   const handleSignOut = async () => {
     setOpen(false);
     setConfirmingLogout(false);
-    await signOut();
     router.push("/");
+    await signOut();
   };
 
   return (

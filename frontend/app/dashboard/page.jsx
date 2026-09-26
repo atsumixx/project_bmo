@@ -159,8 +159,8 @@ function DashboardContent() {
                 type="button"
                 onClick={async () => {
                   setConfirmingLogout(false);
-                  await signOut();
                   router.push("/");
+                  await signOut();
                 }}
                 className="px-3 py-2 rounded-full text-xs font-bold text-white bg-red-500 hover:bg-red-600 transition-colors"
               >

@@ -45,8 +45,27 @@ const TILES = [
   },
 ];
 
-export default function AmbientBackground() {
+const COMPACT_TILES = [
+  {
+    className: "drift-block-1",
+    style: { top: "-4rem", left: "-4rem", width: "20rem", height: "20rem", borderRadius: "52px", opacity: 0.75, transform: "rotate(8deg)" },
+    parallax: 0.04,
+  },
+  {
+    className: "drift-block-3",
+    style: { top: "3rem", right: "-5rem", width: "22rem", height: "22rem", borderRadius: "60px", opacity: 0.8, transform: "rotate(-12deg)" },
+    parallax: 0.05,
+  },
+  {
+    className: "drift-block-2",
+    style: { bottom: "-6rem", left: "20%", width: "26rem", height: "26rem", borderRadius: "64px", opacity: 0.6, transform: "rotate(-6deg)" },
+    parallax: -0.03,
+  },
+];
+
+export default function AmbientBackground({ variant = "full" }) {
   const tileRefs = useRef([]);
+  const tileSet = variant === "compact" ? COMPACT_TILES : TILES;
   // Eased (lerped) scroll value — the tiles chase this instead of the raw
   // scroll position, which is what gives the "gliding through water" feel
   // instead of a value that jumps in lockstep with the scrollbar.
@@ -72,7 +91,7 @@ export default function AmbientBackground() {
 
       tileRefs.current.forEach((el, i) => {
         if (!el) return;
-        const rate = TILES[i].parallax;
+        const rate = tileSet[i]?.parallax ?? 0;
         const yOffset = scrollY * rate;
         const xOffset = Math.sin(scrollY * 0.0022 + rate * 20) * 16;
         el.style.marginTop = `${yOffset}px`;
@@ -107,7 +126,7 @@ export default function AmbientBackground() {
         <path d="M 1120,-80 C 1280,210 1060,490 1220,760 C 1360,990 1220,1180 1300,1280" fill="none" stroke="rgba(186, 202, 218, 0.38)" strokeDasharray="6 6" strokeWidth="1" />
       </svg>
 
-      {TILES.map((tile, i) => (
+      {tileSet.map((tile, i) => (
         <div
           key={i}
           ref={(el) => (tileRefs.current[i] = el)}

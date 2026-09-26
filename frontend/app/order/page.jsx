@@ -12,7 +12,7 @@ export const metadata = {
 export default function OrderPage() {
   return (
     <>
-      <AmbientBackground />
+      <AmbientBackground variant="compact" />
       <AuthHeader />
       <main className="flex-grow relative z-10">
         <PreOrder />

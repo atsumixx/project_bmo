@@ -448,7 +448,7 @@ export default function PreOrder() {
           aria-modal="true"
           role="dialog"
           onClick={() => setModalOpen(false)}
-          className="fixed inset-0 z-50 bg-[#0e2942]/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-50 bg-[#0e2942]/55 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
         >
           <div
             onClick={(event) => event.stopPropagation()}
