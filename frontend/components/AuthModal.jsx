@@ -85,6 +85,11 @@ export default function AuthModal({ isOpen, mode, onClose }) {
 
   const isLogin = activeMode === "login";
 
+  const switchMode = (nextMode) => {
+    setActiveMode(nextMode);
+    setStatus({ type: "idle", message: "" });
+  };
+
   const handleLogin = async () => {
     setIsSubmitting(true);
     setStatus({ type: "idle", message: "" });
@@ -179,7 +184,9 @@ export default function AuthModal({ isOpen, mode, onClose }) {
               <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-on-surface-variant">
                 BMO Access
               </p>
-              <h2 className="text-lg font-bold text-on-surface">{isLogin ? "Sign In" : "Create Account"}</h2>
+              <h2 className="text-lg font-bold text-on-surface">
+                {isLogin ? "Sign In" : "Create Account"}
+              </h2>
             </div>
           </div>
 
@@ -197,10 +204,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
           <div className="flex rounded-full bg-surface p-1.5 shadow-neu-inset text-xs font-semibold">
             <button
               type="button"
-              onClick={() => {
-                setActiveMode("login");
-                setStatus({ type: "idle", message: "" });
-              }}
+              onClick={() => switchMode("login")}
               className={`flex-1 rounded-full px-3 py-2.5 transition-all ${
                 isLogin ? "bg-primary text-white shadow-neu-sm" : "text-on-surface-variant"
               }`}
@@ -212,10 +216,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
             </button>
             <button
               type="button"
-              onClick={() => {
-                setActiveMode("register");
-                setStatus({ type: "idle", message: "" });
-              }}
+              onClick={() => switchMode("register")}
               className={`flex-1 rounded-full px-3 py-2.5 transition-all ${
                 !isLogin ? "bg-primary text-white shadow-neu-sm" : "text-on-surface-variant"
               }`}
@@ -301,6 +302,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <span className="material-symbols-outlined text-base">arrow_forward</span>
                 </span>
               </button>
+
             </>
           ) : (
             <>
@@ -475,6 +477,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   <span className="material-symbols-outlined text-base">person_add</span>
                 </span>
               </button>
+
             </>
           )}
         </div>
