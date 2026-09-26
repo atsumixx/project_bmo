@@ -49,10 +49,10 @@ export default function UserMenu({ variant = "full", onLoginClick }) {
     }
 
     return (
-      <Link href="/login" className={className}>
+      <button type="button" onClick={() => router.push("/")} className={className}>
         <span className="material-symbols-outlined text-sm">login</span>
         Log In
-      </Link>
+      </button>
     );
   }
 

@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import AuthModal from "./AuthModal";
 import UserMenu from "./UserMenu";
 
 const NAV_LINKS = [
-  { href: "/#about", label: "Overview" },
+  { href: "/#about", label: "About Us" },
   { href: "/#demo", label: "Demo" },
   { href: "/#pillars", label: "Architecture" },
   { href: "/#technology", label: "Technology" },
@@ -11,9 +15,18 @@ const NAV_LINKS = [
 ];
 
 export default function AuthHeader() {
+  const [authModal, setAuthModal] = useState({ isOpen: false, mode: "login" });
+
   return (
-    <header className="sticky top-0 z-40 bg-[#edf2f7]/90 backdrop-blur-md border-b border-white/50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
+    <>
+      <AuthModal
+        isOpen={authModal.isOpen}
+        mode={authModal.mode}
+        onClose={() => setAuthModal((current) => ({ ...current, isOpen: false }))}
+      />
+
+      <header className="sticky top-0 z-40 bg-[#edf2f7]/90 backdrop-blur-md border-b border-white/50">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="w-10 h-10 rounded-2xl bg-surface shadow-neu-sm flex items-center justify-center p-1.5">
             <Image
@@ -59,9 +72,13 @@ export default function AuthHeader() {
             <span className="material-symbols-outlined text-sm">visibility</span>
             Explore System
           </Link>
-          <UserMenu variant="compact" />
+          <UserMenu
+            variant="compact"
+            onLoginClick={() => setAuthModal({ isOpen: true, mode: "login" })}
+          />
         </div>
       </div>
     </header>
+    </>
   );
 }

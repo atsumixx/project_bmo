@@ -6,7 +6,7 @@ import AuthModal from "./AuthModal";
 import UserMenu from "./UserMenu";
 
 const NAV_LINKS = [
-  { href: "#about", label: "Overview" },
+  { href: "#about", label: "About Us" },
   { href: "#specs", label: "Kiosk" },
   { href: "#demo", label: "Demo" },
   { href: "#pillars", label: "Architecture" },
@@ -26,7 +26,7 @@ export default function Header() {
   // several sections in a row. If the scroll listener reacts to that, the
   // pill jumps to each section it passes on the way — that's the
   // back-and-forth flicker you were seeing (e.g. click "Log In", pill jumps
-  // back to "Overview" as the scroll passes it, then forward again). This
+  // back to "About us" as the scroll passes it, then forward again). This
   // ref suppresses scroll-driven updates until the scroll that a click
   // kicked off has actually settled.
   const suppressScrollDetectionRef = useRef(false);

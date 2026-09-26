@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/useAuth";
 import { supabase } from "@/lib/supabase";
 
 const TABS = [
-  { id: "overview", label: "Overview", icon: "dashboard" },
+  { id: "About Us", label: "About Us", icon: "dashboard" },
   { id: "profile", label: "Edit profile", icon: "person" },
   { id: "security", label: "Security", icon: "lock" },
 ];
@@ -18,7 +18,7 @@ function DashboardContent() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") || "overview";
+  const initialTab = searchParams.get("tab") || "About Us";
 
   const [tab, setTab] = useState(initialTab);
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "" });
@@ -31,7 +31,7 @@ function DashboardContent() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.replace("/login");
+      router.replace("/");
     }
   }, [loading, user, router]);
 
@@ -189,7 +189,7 @@ function DashboardContent() {
           ))}
         </FadeUp>
 
-        {tab === "overview" && (
+        {tab === "About Us" && (
           <FadeUp className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-6 rounded-2xl bg-surface shadow-neu space-y-1">
               <p className="text-[11px] font-mono uppercase text-on-surface-variant">Account</p>
