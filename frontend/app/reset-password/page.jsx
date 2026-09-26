@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
     }
 
     setStatus({ type: "success", message: "Password updated. Redirecting…" });
-    window.setTimeout(() => router.push("/login"), 1200);
+    window.setTimeout(() => router.push("/dashboard"), 1200);
     setIsSubmitting(false);
   };
 

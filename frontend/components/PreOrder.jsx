@@ -448,11 +448,11 @@ export default function PreOrder() {
           aria-modal="true"
           role="dialog"
           onClick={() => setModalOpen(false)}
-          className="fixed inset-0 z-50 bg-[#0e2942]/55 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-50 bg-[#0e2942]/90 flex items-center justify-center p-3 sm:p-6"
         >
           <div
             onClick={(event) => event.stopPropagation()}
-            className="relative w-full max-w-2xl bg-surface rounded-3xl shadow-neu-lg p-6 sm:p-10 border border-white/80 space-y-6 max-h-[90vh] overflow-y-auto"
+            className="relative w-[min(100%,36rem)] bg-[#edf2f7] rounded-[1.75rem] shadow-[0_24px_60px_rgba(14,41,66,0.18)] p-5 sm:p-8 border border-[#dfeaf3] ring-1 ring-[#eaf0f4] space-y-5 max-h-[90vh] overflow-y-auto overflow-x-hidden"
           >
             <button
               type="button"
@@ -468,7 +468,7 @@ export default function PreOrder() {
                 <span className="material-symbols-outlined text-2xl">shield</span>
               </div>
               <div>
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary px-2.5 py-0.5 rounded-full bg-surface shadow-neu-inset">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary px-2.5 py-0.5 rounded-full bg-surface shadow-neu-inset w-fit inline-block">
                   Formal Request Ref: {reqRef}
                 </span>
                 <h3 className="text-xl font-bold text-on-surface pt-1">

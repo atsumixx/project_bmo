@@ -1,4 +1,3 @@
-import AmbientBackground from "@/components/AmbientBackground";
 import AuthHeader from "@/components/AuthHeader";
 import PreOrder from "@/components/PreOrder";
 import Footer from "@/components/Footer";
@@ -12,7 +11,6 @@ export const metadata = {
 export default function OrderPage() {
   return (
     <>
-      <AmbientBackground variant="compact" />
       <AuthHeader />
       <main className="flex-grow relative z-10">
         <PreOrder />
