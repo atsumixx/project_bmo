@@ -8,7 +8,7 @@ Capstone) in compliance with R.A. 11106.
 
 ```
 frontend/   Next.js 14 (App Router) + Tailwind CSS web app
-backend/    API / services (placeholder — not yet implemented)
+backend/    Reserved for future non-auth server-side logic
 ```
 
 Each app is self-contained: `frontend/` has its own `package.json`,
@@ -29,8 +29,10 @@ component structure, image handling, and known follow-ups.
 
 ## Backend
 
-Not implemented yet. This folder is a placeholder for the API/service layer
-(e.g. the edge-inference bridge, kiosk session handling, or any REST/GraphQL
-endpoints the frontend will eventually call). Add its own `package.json` (or
-equivalent for whatever stack you pick) inside `backend/` when you start it,
-following the same self-contained pattern as `frontend/`.
+No custom backend is currently used for authentication. Auth, sessions, and
+user data are handled directly by Supabase (Postgres + Supabase Auth) from the
+frontend via `@supabase/supabase-js`.
+
+This folder is reserved for future non-auth server-side logic such as an
+edge-inference bridge, kiosk session handling, or endpoints Supabase Auth does
+not cover. Nothing is implemented here yet.
