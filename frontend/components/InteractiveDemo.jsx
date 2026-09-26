@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import FadeUp from "./FadeUp";
 
@@ -151,6 +152,17 @@ export default function InteractiveDemo() {
                 Speak output
               </button>
             </div>
+
+            <Link
+              href="/order"
+              className="tactile-btn w-full px-5 py-3 rounded-2xl text-xs font-bold tracking-wide text-white bg-gradient-to-r from-primary to-primary-light shadow-neu-sm flex items-center justify-center gap-2 group"
+            >
+              <span className="material-symbols-outlined text-sm">local_shipping</span>
+              Order a kiosk for your counter
+              <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">
+                arrow_forward
+              </span>
+            </Link>
 
             <div className="flex items-center gap-2 text-[11px] font-mono text-on-surface-variant">
               {STAGES.map((label, i) => (
