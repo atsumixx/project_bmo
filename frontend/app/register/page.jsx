@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import { supabase } from "@/lib/supabase";
+import { useResendCooldown } from "@/lib/useResendCooldown";
 
 const ROLES = [
   { id: "patron", icon: "accessibility_new", label: "Patron" },
@@ -13,7 +14,7 @@ const ROLES = [
   { id: "research", icon: "school", label: "Research" },
 ];
 
-const FSL_MODES = ["FSL", "Limited ASL"];
+const FSL_MODES = ["FSL", "SEE", "REG"];
 
 export default function RegisterPage() {
   const [role, setRole] = useState("patron");
@@ -34,6 +35,14 @@ export default function RegisterPage() {
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
+  // Once we've sent the confirmation email, we track the address it went
+  // to (so "resend" doesn't depend on the form still being filled in) and
+  // offer a resend button on a doubling cooldown (15s, 30s, 60s, ...).
+  const [pendingEmail, setPendingEmail] = useState("");
+  const [isResending, setIsResending] = useState(false);
+  const [resendStatus, setResendStatus] = useState({ type: "idle", message: "" });
+  const resendCooldown = useResendCooldown(15);
 
   const strength = Math.min(password.length / 10, 1);
 
@@ -57,10 +66,13 @@ export default function RegisterPage() {
 
     setIsSubmitting(true);
     setStatus({ type: "idle", message: "" });
+    setPendingEmail("");
+    setResendStatus({ type: "idle", message: "" });
 
     try {
+      const normalizedEmail = form.email.trim().toLowerCase();
       const { data, error } = await supabase.auth.signUp({
-        email: form.email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
         options: {
           data: {
@@ -93,11 +105,43 @@ export default function RegisterPage() {
 
       if (data.session) {
         router.push("/dashboard");
+      } else {
+        // Email confirmation is pending — start the resend cooldown.
+        setPendingEmail(normalizedEmail);
+        resendCooldown.start();
       }
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!resendCooldown.canResend || !pendingEmail || isResending) return;
+
+    setIsResending(true);
+    setResendStatus({ type: "idle", message: "" });
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: pendingEmail,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setResendStatus({ type: "success", message: "Confirmation email resent." });
+      resendCooldown.start();
+    } catch (error) {
+      setResendStatus({ type: "error", message: error.message || "Unable to resend email." });
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -326,10 +370,40 @@ export default function RegisterPage() {
               </p>
             ) : null}
 
+            {pendingEmail && (
+              <div className="p-4 rounded-2xl bg-surface shadow-neu-inset text-center space-y-2">
+                <p className="text-[11px] text-on-surface-variant">
+                  Didn&apos;t get the email? We can resend it to{" "}
+                  <span className="font-semibold text-on-surface">{pendingEmail}</span>.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={!resendCooldown.canResend || isResending}
+                  className="text-xs font-bold text-primary hover:underline disabled:text-on-surface-variant disabled:no-underline disabled:cursor-not-allowed"
+                >
+                  {isResending
+                    ? "Resending…"
+                    : resendCooldown.canResend
+                      ? "Resend confirmation email"
+                      : `Resend available in ${resendCooldown.secondsLeft}s`}
+                </button>
+                {resendStatus.message && (
+                  <p
+                    className={`text-[11px] font-medium ${
+                      resendStatus.type === "success" ? "text-green-600" : "text-red-500"
+                    }`}
+                  >
+                    {resendStatus.message}
+                  </p>
+                )}
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="tactile-btn w-full py-3.5 rounded-2xl text-sm font-bold text-white bg-primary shadow-neu-sm flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              disabled={isSubmitting || Boolean(pendingEmail)}
+              className="tactile-btn w-full py-3.5 rounded-2xl text-sm font-bold text-white bg-primary shadow-neu-sm flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Creating Account..." : "Create Account"}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
