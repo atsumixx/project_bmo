@@ -21,6 +21,7 @@ export default function Header() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [pillStyle, setPillStyle] = useState({ width: 0, transform: "translateX(6px)", opacity: 0 });
   const [authModal, setAuthModal] = useState({ isOpen: false, mode: "login" });
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // While a click-triggered smooth scroll is in flight, the page glides past
   // several sections in a row. If the scroll listener reacts to that, the
@@ -51,11 +52,13 @@ export default function Header() {
     if (targetHref === "/login" || targetHref === "/register") {
       e.preventDefault();
       setAuthModal({ isOpen: true, mode: targetHref === "/register" ? "register" : "login" });
+      setMobileOpen(false);
       return;
     }
 
     e.preventDefault();
     suppressScrollDetectionRef.current = true;
+    setMobileOpen(false);
     setActiveIndex(i);
     moveIndicatorTo(i);
 
@@ -91,6 +94,19 @@ export default function Header() {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [activeIndex]);
 
   useEffect(() => {
     function onResize() {
@@ -138,7 +154,7 @@ export default function Header() {
       />
 
       <header className="sticky top-0 z-40 bg-[#edf2f7]/90 backdrop-blur-md border-b border-white/50 transition-colors">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 h-24 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 lg:h-24 flex items-center justify-between">
           <a className="flex items-center gap-4 group cursor-pointer" href="#about">
             <div className="w-12 h-12 rounded-2xl bg-surface shadow-neu-sm flex items-center justify-center p-1.5">
               <Image
@@ -193,9 +209,49 @@ export default function Header() {
             ))}
           </nav>
 
+          <button
+            type="button"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+            className="lg:hidden flex items-center justify-center w-11 h-11 rounded-2xl bg-surface shadow-neu-sm text-on-surface-variant"
+          >
+            <span className="material-symbols-outlined text-xl">{mobileOpen ? "close" : "menu"}</span>
+          </button>
+
           <div className="hidden lg:block">
             <UserMenu onLoginClick={() => setAuthModal({ isOpen: true, mode: "login" })} />
           </div>
+        </div>
+
+        <div
+          className={`lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+            mobileOpen ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <nav className="px-6 pb-6 pt-2 flex flex-col gap-1.5 border-t border-white/50">
+            {NAV_LINKS.map((link, i) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, i)}
+                className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-colors ${
+                  activeIndex === i ? "bg-primary text-white shadow-neu-sm" : "bg-surface shadow-neu-inset text-on-surface-variant"
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+            <div className="pt-3">
+              <UserMenu
+                variant="full"
+                onLoginClick={() => {
+                  setMobileOpen(false);
+                  setAuthModal({ isOpen: true, mode: "login" });
+                }}
+              />
+            </div>
+          </nav>
         </div>
       </header>
     </>

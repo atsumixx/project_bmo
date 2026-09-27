@@ -20,7 +20,7 @@ export default function Hero() {
           </FadeUp>
 
           <FadeUp delay={160} className="space-y-1">
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.6rem] font-extrabold text-on-surface tracking-tight leading-[1.08]">
+            <h1 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-extrabold text-on-surface tracking-tight leading-[1.1]">
               <span className="block">Bridging silence</span>
               <span className="block bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
                 with physical AI.
@@ -36,7 +36,7 @@ export default function Hero() {
 
           <FadeUp
             delay={320}
-            className="flex flex-wrap items-center gap-x-10 gap-y-4 pt-8 border-t border-white/60 font-mono text-[11px] text-on-surface-variant"
+            className="grid grid-cols-2 sm:flex sm:flex-wrap items-start sm:items-center gap-x-6 gap-y-5 sm:gap-x-10 sm:gap-y-4 pt-8 border-t border-white/60 font-mono text-[11px] text-on-surface-variant"
           >
             <div>
               <div className="text-on-surface font-bold text-lg">Millions</div>

@@ -17,6 +17,15 @@ input[type="password"]::-ms-clear {
   display: none;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
@@ -240,6 +249,18 @@ input[type="password"]::-ms-clear {
 .tactile-btn:active {
   transform: translateY(1.5px) scale(0.99);
   box-shadow: inset 3px 3px 6px #cad7e2, inset -3px -3px 6px #ffffff !important;
+}
+
+/* Disable hover-lift effects on touch devices — hover state otherwise
+   "sticks" after a tap until the user taps elsewhere, which looks buggy */
+@media (hover: none) {
+  .interactive-card:hover {
+    transform: none;
+    box-shadow: 10px 10px 24px #d0dbe4, -10px -10px 24px #ffffff;
+  }
+  .tactile-btn:hover {
+    transform: none;
+  }
 }
 
 /* Interactive sliding pill indicator transitions */

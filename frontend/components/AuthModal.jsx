@@ -166,16 +166,16 @@ export default function AuthModal({ isOpen, mode, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/45 px-4 py-8 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/45 px-4 py-6 sm:py-8 backdrop-blur-sm overflow-y-auto"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-white/70 bg-[#edf2f7] shadow-[0_30px_90px_rgba(13,28,49,0.24)]"
+        className="relative w-full max-w-md overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-white/70 bg-[#edf2f7] shadow-[0_30px_90px_rgba(13,28,49,0.24)] my-auto max-h-[92vh] overflow-y-auto"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-6 pt-5">
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-4 sm:pt-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-surface shadow-neu-sm text-primary">
               <span className="material-symbols-outlined text-xl">shield</span>
@@ -193,14 +193,14 @@ export default function AuthModal({ isOpen, mode, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-neu-sm text-on-surface-variant transition-colors hover:text-primary"
+            className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-surface shadow-neu-sm text-on-surface-variant transition-colors hover:text-primary"
             aria-label="Close login modal"
           >
             <span className="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
-        <div className="px-6 pt-5">
+        <div className="px-4 sm:px-6 pt-4 sm:pt-5">
           <div className="flex rounded-full bg-surface p-1.5 shadow-neu-inset text-xs font-semibold">
             <button
               type="button"
@@ -229,7 +229,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
           </div>
         </div>
 
-        <div className="space-y-4 px-6 pb-6 pt-5">
+        <div className="space-y-4 px-4 sm:px-6 pb-5 sm:pb-6 pt-4 sm:pt-5">
           {isLogin ? (
             <>
               <div className="space-y-3">
@@ -395,7 +395,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                 </div>
 
                 <div className="space-y-2 pt-1">
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {passwordChecks.map((check) => (
                       <span
                         key={check.label}

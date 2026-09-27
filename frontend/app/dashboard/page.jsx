@@ -126,7 +126,7 @@ function DashboardContent() {
   return (
     <>
       <AuthHeader />
-      <main className="flex-grow relative z-10 max-w-5xl mx-auto w-full px-6 sm:px-10 py-14 sm:py-20">
+      <main className="flex-grow relative z-10 max-w-5xl mx-auto w-full px-4 sm:px-6 md:px-10 py-10 sm:py-14 md:py-20">
         <FadeUp className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
           <div>
             <p className="text-xs font-mono uppercase tracking-widest text-primary font-semibold">
@@ -172,14 +172,14 @@ function DashboardContent() {
 
         <FadeUp
           delay={80}
-          className="flex gap-2 p-1.5 rounded-full bg-surface shadow-neu-inset text-xs font-semibold w-fit mb-10"
+          className="flex gap-2 p-1.5 rounded-full bg-surface shadow-neu-inset text-xs font-semibold w-full sm:w-fit mb-10 overflow-x-auto no-scrollbar"
         >
           {TABS.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setTab(item.id)}
-              className={`px-4 py-2.5 rounded-full flex items-center gap-1.5 transition-colors ${
+              className={`shrink-0 px-4 py-2.5 rounded-full flex items-center gap-1.5 transition-colors whitespace-nowrap ${
                 tab === item.id ? "bg-primary text-white shadow-neu-sm" : "text-on-surface-variant"
               }`}
             >
@@ -190,7 +190,7 @@ function DashboardContent() {
         </FadeUp>
 
         {tab === "About Us" && (
-          <FadeUp className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <FadeUp className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
             <div className="p-6 rounded-2xl bg-surface shadow-neu space-y-1">
               <p className="text-[11px] font-mono uppercase text-on-surface-variant">Account</p>
               <p className="text-sm font-bold text-on-surface break-all">{user.email}</p>

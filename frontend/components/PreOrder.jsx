@@ -56,7 +56,7 @@ export default function PreOrder() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         <div className="lg:col-span-8 space-y-10">
           <form className="space-y-8" onSubmit={handleSubmit}>
-            <FadeUp className="p-8 sm:p-10 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-6">
+            <FadeUp className="p-5 sm:p-8 md:p-10 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-5 sm:space-y-6">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-surface shadow-neu-inset text-primary font-mono text-xs font-bold flex items-center justify-center">
                   1
@@ -131,7 +131,7 @@ export default function PreOrder() {
               </div>
             </FadeUp>
 
-            <FadeUp className="p-8 sm:p-10 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-6">
+            <FadeUp className="p-5 sm:p-8 md:p-10 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-5 sm:space-y-6">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-surface shadow-neu-inset text-primary font-mono text-xs font-bold flex items-center justify-center">
                   2
@@ -190,7 +190,7 @@ export default function PreOrder() {
               </div>
             </FadeUp>
 
-            <FadeUp className="p-8 sm:p-10 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-6">
+            <FadeUp className="p-5 sm:p-8 md:p-10 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-5 sm:space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-full bg-surface shadow-neu-inset text-primary font-mono text-xs font-bold flex items-center justify-center">
@@ -229,7 +229,7 @@ export default function PreOrder() {
         </div>
 
         <FadeUp delay={200} className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
-          <div className="p-8 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-6 transition-all duration-300 hover:shadow-neu-lg">
+          <div className="p-5 sm:p-8 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-5 sm:space-y-6 transition-all duration-300 hover:shadow-neu-lg">
             <div className="flex items-center justify-between pb-2 border-b border-white/60">
               <div>
                 <h4 className="text-base font-bold text-on-surface">What this request means</h4>

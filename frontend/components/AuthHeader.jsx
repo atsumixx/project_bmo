@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthModal from "./AuthModal";
 import UserMenu from "./UserMenu";
 
@@ -16,6 +16,16 @@ const NAV_LINKS = [
 
 export default function AuthHeader() {
   const [authModal, setAuthModal] = useState({ isOpen: false, mode: "login" });
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
 
   return (
     <>
@@ -26,7 +36,7 @@ export default function AuthHeader() {
       />
 
       <header className="sticky top-0 z-40 bg-[#edf2f7]/90 backdrop-blur-md border-b border-white/50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-16 sm:h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="w-10 h-10 rounded-2xl bg-surface shadow-neu-sm flex items-center justify-center p-1.5">
             <Image
@@ -72,11 +82,52 @@ export default function AuthHeader() {
             <span className="material-symbols-outlined text-sm">visibility</span>
             Explore System
           </Link>
-          <UserMenu
-            variant="compact"
-            onLoginClick={() => setAuthModal({ isOpen: true, mode: "login" })}
-          />
+
+          <div className="hidden lg:block">
+            <UserMenu
+              variant="compact"
+              onLoginClick={() => setAuthModal({ isOpen: true, mode: "login" })}
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-2xl bg-surface shadow-neu-sm text-on-surface-variant"
+          >
+            <span className="material-symbols-outlined text-xl">{mobileOpen ? "close" : "menu"}</span>
+          </button>
         </div>
+      </div>
+
+      <div
+        className={`lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+          mobileOpen ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav className="px-6 pb-6 pt-2 flex flex-col gap-1.5 border-t border-white/50">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className="px-4 py-3 rounded-2xl text-sm font-semibold bg-surface shadow-neu-inset text-on-surface-variant"
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="pt-3">
+            <UserMenu
+              variant="full"
+              onLoginClick={() => {
+                setMobileOpen(false);
+                setAuthModal({ isOpen: true, mode: "login" });
+              }}
+            />
+          </div>
+        </nav>
       </div>
     </header>
     </>
