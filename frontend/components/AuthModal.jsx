@@ -270,6 +270,11 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                     type={showPassword ? "text" : "password"}
                     value={loginPassword}
                     onChange={(event) => setLoginPassword(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && loginEmail && loginPassword && !isSubmitting) {
+                        handleLogin();
+                      }
+                    }}
                     placeholder="••••••••••••"
                     className="w-full bg-transparent text-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none"
                   />
@@ -437,6 +442,11 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                     type={showConfirm ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(event) => setConfirmPassword(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && isPasswordReady && isEmailReady && firstName && lastName && !isSubmitting) {
+                        handleRegister();
+                      }
+                    }}
                     placeholder="Repeat password"
                     className="w-full bg-transparent text-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none"
                   />
