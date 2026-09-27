@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import { supabase } from "@/lib/supabase";
 import { useResendCooldown } from "@/lib/useResendCooldown";
+import { useAuth } from "@/lib/useAuth";
 
 const ROLES = [
   { id: "patron", icon: "accessibility_new", label: "Patron" },
@@ -35,11 +36,36 @@ export default function RegisterPage() {
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
 
   // Once we've sent the confirmation email, we track the address it went
   // to (so "resend" doesn't depend on the form still being filled in) and
   // offer a resend button on a doubling cooldown (15s, 30s, 60s, ...).
   const [pendingEmail, setPendingEmail] = useState("");
+
+  useEffect(() => {
+    if (pendingEmail && user) {
+      router.push("/dashboard");
+    }
+  }, [pendingEmail, user, router]);
+
+  useEffect(() => {
+    if (!pendingEmail) return;
+
+    const recheckSession = () => {
+      if (document.visibilityState === "visible") {
+        supabase.auth.getSession();
+      }
+    };
+
+    document.addEventListener("visibilitychange", recheckSession);
+    window.addEventListener("focus", recheckSession);
+
+    return () => {
+      document.removeEventListener("visibilitychange", recheckSession);
+      window.removeEventListener("focus", recheckSession);
+    };
+  }, [pendingEmail]);
   const [isResending, setIsResending] = useState(false);
   const [resendStatus, setResendStatus] = useState({ type: "idle", message: "" });
   const resendCooldown = useResendCooldown(15);
