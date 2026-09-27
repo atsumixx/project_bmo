@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import FadeUp from "./FadeUp";
 
 const STATS = [
-  { target: 100, suffix: "%", label: "Real-Time Edge AI", sub: "On-device inference, no cloud round-trip", color: "text-primary" },
-  { target: 100, suffix: "%", label: "Local & Offline", sub: "On-device memory & privacy", color: "text-secondary" },
-  { target: 1, suffix: "", label: "Prototype Phase", sub: "Undergoing evaluation with Deaf signers", color: "text-primary" },
-  { target: 100, suffix: "%", label: "Zero Cloud Dependency", sub: "Total civic data sovereignty", color: "text-on-surface" },
+  { target: 100, suffix: "%", label: "On-Device Inference", sub: "Design goal: no cloud round-trip by default", color: "text-primary" },
+  { target: 100, suffix: "%", label: "Offline-Capable", sub: "Design goal: no internet dependency", color: "text-secondary" },
+  { target: 1, suffix: "", label: "Prototype Phase", sub: "Indoor evaluation phase for capstone testing", color: "text-primary" },
+  { target: 0, suffix: "", label: "Cloud Servers Used", sub: "Local edge processing only", color: "text-on-surface" },
 ];
 
 function StatCounter({ target, suffix, color }) {
@@ -104,9 +104,9 @@ export default function ImpactStats() {
         </div>
 
         <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed text-center max-w-2xl mx-auto">
-          Project BMO is an open civic engineering protocol developed to guarantee complete data sovereignty, zero
-          cloud outages, and unwavering accessibility compliance across municipal halls, district courts, and health
-          centers nationwide.
+          Project BMO is a BSIT capstone research prototype exploring on-device Filipino Sign Language recognition for
+          public-service settings. It is currently in the prototype and evaluation phase, developed in alignment with the
+          accessibility goals of R.A. 11106.
         </p>
       </FadeUp>
     </section>

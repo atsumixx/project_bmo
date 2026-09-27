@@ -54,8 +54,8 @@ export default function InteractiveDemo() {
           </h2>
         </FadeUp>
         <FadeUp delay={100} className="max-w-sm text-sm text-on-surface-variant leading-relaxed">
-          This is a visual study of the recognition experience. The live states below represent what
-          BMO is designed to make visible: capture, processing, and connection.
+          This is a conceptual study of the recognition workflow. The live states below illustrate the
+          processing pipeline described in the capstone research rather than a production inference system.
         </FadeUp>
       </div>
 
@@ -157,8 +157,8 @@ export default function InteractiveDemo() {
               href="/order"
               className="tactile-btn w-full px-5 py-3 rounded-2xl text-xs font-bold tracking-wide text-white bg-gradient-to-r from-primary to-primary-light shadow-neu-sm flex items-center justify-center gap-2 group"
             >
-              <span className="material-symbols-outlined text-sm">local_shipping</span>
-              Order a kiosk for your counter
+              <span className="material-symbols-outlined text-sm">science</span>
+              Request a pilot demonstration
               <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">
                 arrow_forward
               </span>

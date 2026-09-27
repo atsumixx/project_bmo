@@ -3,9 +3,9 @@ import PreOrder from "@/components/PreOrder";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Order & Deploy — Project BMO",
+  title: "Pilot Demonstration — Project BMO",
   description:
-    "Request Project BMO kiosk units for your civic counter, hospital, or campus — pricing, delivery details, and a formal requisition in one place.",
+    "Request a pilot demonstration for Project BMO, a BSIT capstone research prototype for Filipino Sign Language accessibility in public-service settings.",
 };
 
 export default function OrderPage() {

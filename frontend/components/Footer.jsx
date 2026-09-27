@@ -87,15 +87,10 @@ export default function Footer() {
             <span className="material-symbols-outlined text-sm">north_east</span>
           </Link>
 
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-1.5 hover:text-white/70 transition-colors"
-          >
-            <span className="material-symbols-outlined text-sm">code</span>
-            GitHub placeholder
-          </a>
+          <Link href="#about" className="flex items-center gap-1.5 hover:text-white/70 transition-colors">
+            <span className="material-symbols-outlined text-sm">info</span>
+            Capstone overview
+          </Link>
         </div>
       </div>
     </footer>

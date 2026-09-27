@@ -6,7 +6,7 @@ const STEPS = [
     icon: "photo_camera",
     title: "Capture",
     description:
-      "The camera reads hand shape, motion, and facial cues in real time, without recording or storing raw video.",
+      "The camera reads hand shape, motion, and facial cues in real time; only extracted landmark data is processed, not raw video streams.",
   },
   {
     index: "02",

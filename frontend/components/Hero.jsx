@@ -39,8 +39,8 @@ export default function Hero() {
             className="flex flex-wrap items-center gap-x-10 gap-y-4 pt-8 border-t border-white/60 font-mono text-[11px] text-on-surface-variant"
           >
             <div>
-              <div className="text-on-surface font-bold text-lg">4.5M+</div>
-              <div>Deaf &amp; HoH Filipinos</div>
+              <div className="text-on-surface font-bold text-lg">Millions</div>
+              <div>of Deaf &amp; HoH Filipinos</div>
             </div>
             <div>
               <div className="text-on-surface font-bold text-lg">R.A. 11106</div>

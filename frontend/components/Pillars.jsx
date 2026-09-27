@@ -42,7 +42,7 @@ const PILLARS = [
     icon: "security",
     title: "Zero-Cloud Privacy",
     description:
-      "No video streams or facial landmarks ever leave local RAM. Full compliance with the Philippine Data Privacy Act of 2012.",
+      "No video streams or facial landmarks ever leave local RAM, supporting the data-locality principles behind the Philippine Data Privacy Act of 2012.",
     stat: "100% On-Device",
     statIcon: "lock",
     color: "primary",

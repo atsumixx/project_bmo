@@ -13,7 +13,7 @@ const ROLES = [
   { id: "research", icon: "school", label: "Research" },
 ];
 
-const FSL_MODES = ["FSL", "SEE", "REG"];
+const FSL_MODES = ["FSL", "Limited ASL"];
 
 export default function RegisterPage() {
   const [role, setRole] = useState("patron");
