@@ -6,12 +6,12 @@ export default function Hero() {
     <section className="relative pt-20 pb-28 sm:pt-24 sm:pb-36 overflow-hidden" id="about">
       <div className="animate-ambient absolute top-10 left-1/2 -translate-x-1/2 w-[820px] h-[420px] bg-gradient-to-tr from-accent-soft/25 via-primary-light/10 to-accent-cyan/15 blur-3xl pointer-events-none -z-10 rounded-full" />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-0 items-center">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-center">
         {/* Left: copy */}
-        <div className="relative z-10 space-y-10 text-left lg:pr-6">
+        <div className="relative z-10 flex flex-col gap-6 lg:gap-10 text-left lg:pr-6">
           <FadeUp
             delay={80}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface shadow-neu-inset text-xs font-mono text-on-surface-variant"
+            className="order-3 lg:order-1 self-center lg:self-start inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface shadow-neu-inset text-xs font-mono text-on-surface-variant"
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             <span className="text-outline-soft">2026 · BSIT Capstone</span>
@@ -19,7 +19,7 @@ export default function Hero() {
             <span className="font-semibold text-primary">Filipino Sign Language</span>
           </FadeUp>
 
-          <FadeUp delay={160} className="space-y-1">
+          <FadeUp delay={160} className="order-1 lg:order-2 space-y-1 text-center lg:text-left">
             <h1 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-extrabold text-on-surface tracking-tight leading-[1.1]">
               <span className="block">Bridging silence</span>
               <span className="block bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
@@ -28,7 +28,7 @@ export default function Hero() {
             </h1>
           </FadeUp>
 
-          <FadeUp delay={240} className="max-w-lg text-base sm:text-lg text-on-surface-variant leading-relaxed">
+          <FadeUp delay={240} className="order-2 lg:order-3 max-w-lg text-base sm:text-lg text-on-surface-variant leading-relaxed">
             Project BMO turns real-time Filipino Sign Language into readable text and audible
             speech, on-device — so a counter, a clinic, or a classroom needs nothing more than
             the kiosk in front of them. No app to install, no connection to wait on.
@@ -36,7 +36,7 @@ export default function Hero() {
 
           <FadeUp
             delay={320}
-            className="grid grid-cols-2 sm:flex sm:flex-wrap items-start sm:items-center gap-x-6 gap-y-5 sm:gap-x-10 sm:gap-y-4 pt-8 border-t border-white/60 font-mono text-[11px] text-on-surface-variant"
+            className="order-4 grid grid-cols-2 sm:flex sm:flex-wrap items-start sm:items-center gap-x-6 gap-y-5 sm:gap-x-10 sm:gap-y-4 pt-8 border-t border-white/60 font-mono text-[11px] text-on-surface-variant"
           >
             <div>
               <div className="text-on-surface font-bold text-lg">Millions</div>
@@ -58,7 +58,7 @@ export default function Hero() {
         </div>
 
         {/* Right: kiosk — purely decorative and continuously floating. */}
-        <FadeUp delay={200} className="relative z-20 flex justify-center lg:justify-end lg:-ml-20 xl:-ml-32">
+        <FadeUp delay={200} className="order-first lg:order-none relative z-20 flex justify-center lg:justify-end lg:-ml-20 xl:-ml-32">
           <div className="relative w-[22rem] sm:w-[30rem] lg:w-[36rem] xl:w-[40rem] cursor-default">
             <svg
               aria-hidden="true"
