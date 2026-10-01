@@ -39,10 +39,6 @@ export function useAuth() {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("bmo_user");
-      localStorage.removeItem("bmo_token");
-    }
   };
 
   return { user, loading, signOut };

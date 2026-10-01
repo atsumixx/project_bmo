@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/useAuth";
 
 function getEmailHealth(email) {
   if (!email) {
@@ -40,8 +41,10 @@ export default function AuthModal({ isOpen, mode, onClose }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const router = useRouter();
+  const { user } = useAuth();
 
   const emailCheck = getEmailHealth(email);
 
@@ -63,6 +66,14 @@ export default function AuthModal({ isOpen, mode, onClose }) {
     setActiveMode(mode);
     setStatus({ type: "idle", message: "" });
   }, [mode, isOpen]);
+
+  useEffect(() => {
+    if (!awaitingConfirmation || !user) return;
+
+    setAwaitingConfirmation(false);
+    onClose();
+    router.push("/dashboard");
+  }, [awaitingConfirmation, user, onClose, router]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -104,8 +115,6 @@ export default function AuthModal({ isOpen, mode, onClose }) {
         throw error;
       }
 
-      localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.session?.access_token || "");
       setStatus({ type: "success", message: "Login successful." });
       window.setTimeout(() => {
         onClose();
@@ -120,6 +129,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
 
   const handleRegister = async () => {
     setIsSubmitting(true);
+    setAwaitingConfirmation(false);
     setStatus({ type: "idle", message: "" });
 
     try {
@@ -132,7 +142,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
             last_name: lastName,
             role: "patron",
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
 
@@ -140,14 +150,9 @@ export default function AuthModal({ isOpen, mode, onClose }) {
         throw error;
       }
 
-      if (data.session) {
-        localStorage.setItem("bmo_user", JSON.stringify(data.user));
-        localStorage.setItem("bmo_token", data.session?.access_token || "");
-      }
-
       const message = data.session
         ? "Account created successfully."
-        : "Almost there — check your email and tap the sign-in link we sent you.";
+        : "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.";
 
       setStatus({ type: "success", message });
 
@@ -156,6 +161,8 @@ export default function AuthModal({ isOpen, mode, onClose }) {
           onClose();
           router.push("/dashboard");
         }, 600);
+      } else {
+        setAwaitingConfirmation(true);
       }
     } catch (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });

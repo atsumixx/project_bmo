@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/useAuth";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -12,6 +13,31 @@ export default function ResetPasswordPage() {
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <>
+        <AuthHeader />
+        <main className="flex-grow flex items-center justify-center py-24">
+          <p className="text-sm text-on-surface-variant font-mono">Verifying link…</p>
+        </main>
+      </>
+    );
+  }
+
+  if (!user) {
+    return (
+      <>
+        <AuthHeader />
+        <main className="flex-grow flex items-center justify-center py-24 px-6 text-center">
+          <p className="text-sm text-on-surface-variant">
+            Your reset link has expired. <a href="/forgot-password" className="text-primary font-semibold">Request a new one</a>.
+          </p>
+        </main>
+      </>
+    );
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();

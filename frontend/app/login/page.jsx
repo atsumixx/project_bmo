@@ -37,8 +37,6 @@ export default function LoginPage() {
         throw error;
       }
 
-      localStorage.setItem("bmo_user", JSON.stringify(data.user));
-      localStorage.setItem("bmo_token", data.session?.access_token || "");
       setStatus({ type: "success", message: "Login successful." });
       router.push("/dashboard");
     } catch (error) {

@@ -110,7 +110,7 @@ export default function RegisterPage() {
             deaf_mode: deafMode,
             hand_cues: handCues,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
 
@@ -118,14 +118,9 @@ export default function RegisterPage() {
         throw error;
       }
 
-      if (data.session) {
-        localStorage.setItem("bmo_user", JSON.stringify(data.user));
-        localStorage.setItem("bmo_token", data.session?.access_token || "");
-      }
-
       const message = data.session
         ? "Account created successfully."
-        : "Almost there — check your email and tap the sign-in link we sent you.";
+        : "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.";
 
       setStatus({ type: "success", message });
 
@@ -154,7 +149,7 @@ export default function RegisterPage() {
         type: "signup",
         email: pendingEmail,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
 
