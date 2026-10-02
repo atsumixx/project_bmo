@@ -15,8 +15,8 @@ function ScreenReadout() {
   return (
     <div className="w-full max-w-sm rounded-[1.75rem] bg-[#0e2942] p-6 shadow-neu-inset-deep space-y-5 font-mono">
       <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-white/50">
-        <span>Live capture</span>
-        <span className="text-accent-cyan">35.4%</span>
+        <span>Concept preview</span>
+        <span className="text-accent-cyan">Illustrative</span>
       </div>
 
       <div className="flex items-end gap-1 h-12">
@@ -66,7 +66,7 @@ export default function KioskSpecs() {
             <p className="text-sm text-on-surface-variant leading-relaxed max-w-lg">
               A single self-contained terminal — camera, screen, speaker, and compute — designed
               to sit at a civic counter and hold a full conversation without a network connection.
-              What you just zoomed into is its live screen, mid-conversation.
+              The screen readout is a concept preview of the intended interaction.
             </p>
           </FadeUp>
 
