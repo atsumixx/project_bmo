@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import FadeUp from "./FadeUp";
+import { supabase } from "@/lib/supabase";
 
 const DEFAULT_FORM = {
   institution: "",
@@ -12,11 +13,14 @@ const DEFAULT_FORM = {
   email: "",
   phone: "",
   notes: "",
+  website: "",
 };
 
 export default function PreOrder() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleFieldChange = (event) => {
     const { name, value } = event.target;
@@ -32,10 +36,37 @@ export default function PreOrder() {
     form.email.trim() &&
     form.phone.trim();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!requiredFilled) return;
-    setSubmitted(true);
+    if (!requiredFilled || isSubmitting || submitted) return;
+
+    if (form.website) {
+      setSubmitted(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+
+    const { error: insertError } = await supabase.from("pilot_requests").insert({
+      institution: form.institution.trim(),
+      street: form.street.trim(),
+      city: form.city.trim(),
+      province: form.province.trim(),
+      contact_name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.trim(),
+      notes: form.notes.trim() || null,
+    });
+
+    if (insertError) {
+      console.error("Pilot request failed:", insertError.message);
+      setError("We couldn't send your request. Please try again in a moment.");
+    } else {
+      setSubmitted(true);
+      setForm(DEFAULT_FORM);
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -217,14 +248,33 @@ export default function PreOrder() {
               </div>
             </FadeUp>
 
+            <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+              <label htmlFor="website">Leave this field empty</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.website}
+                onChange={handleFieldChange}
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={!requiredFilled}
-              className="tactile-btn w-full py-4 rounded-full bg-gradient-to-r from-primary to-primary-light text-white font-semibold text-xs tracking-wide shadow-neu hover:brightness-105 active:shadow-neu-inset transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+              disabled={!requiredFilled || isSubmitting || submitted}
+              className="tactile-btn w-full py-4 rounded-full bg-gradient-to-r from-primary to-primary-light text-white font-semibold text-xs tracking-wide shadow-neu hover:brightness-105 active:shadow-neu-inset transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Request pilot demonstration
+              {isSubmitting ? "Sending…" : submitted ? "Request sent" : "Request pilot demonstration"}
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </button>
+
+            {error && (
+              <p role="alert" className="text-xs font-medium text-red-500 text-center">
+                {error}
+              </p>
+            )}
           </form>
         </div>
 
@@ -273,9 +323,12 @@ export default function PreOrder() {
       </div>
 
       {submitted && (
-        <div className="mt-8 rounded-3xl border border-primary/20 bg-primary/5 p-5 text-center text-sm text-on-surface shadow-neu">
-          Thank you. Your pilot interest has been recorded, and the research team will follow up with the next evaluation
-          steps.
+        <div
+          role="status"
+          className="mt-8 rounded-3xl border border-primary/20 bg-primary/5 p-5 text-center text-sm text-on-surface shadow-neu"
+        >
+          Thank you. Your pilot interest has been recorded, and the research team will follow up
+          with the next evaluation steps.
         </div>
       )}
     </section>
