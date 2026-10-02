@@ -70,7 +70,7 @@ export default function ImpactStats() {
                 width={48}
                 height={48}
                 className="w-full h-full object-contain filter drop-shadow-xs"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaM_8sgL4BQgegdEnuSekvIzvh9TyQqMXMB5cx7Ecy7TuMfjjF5m2Ixb8WMZXjQVzXDqpPc-oYxP2_abrg-rfFH1noHsUk1Uo5WPw0F1JdZ57KSdqgIaR3JZRuXTodWiA2oKcpaWY3hRV7IFYpVSsuCnvbGJQwFqDEZrMa3ycAFOJQlO-mHqwMLg4M4Jv4owvOlxa_WeFc04Hpw-EI1uGMaQR2VKgZEgI66P3onsP8oR60OaYhFC_X2j1t2CEIiBrDtQ"
+                src="/crest.png"
               />
             </div>
             <div>

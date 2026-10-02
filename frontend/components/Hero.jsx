@@ -81,9 +81,9 @@ export default function Hero() {
 
             <div className="animate-float-lg">
               <Image
-                alt="SHIELD kiosk showing an FSL avatar greeting a user"
-                width={567}
-                height={440}
+                alt="Design concept of the SHIELD kiosk showing an FSL avatar greeting a user"
+                width={555}
+                height={452}
                 priority
                 className="w-full h-auto drop-shadow-2xl"
                 src="/kiosk.png"

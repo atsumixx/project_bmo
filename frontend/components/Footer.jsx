@@ -26,7 +26,7 @@ export default function Footer() {
                   width={40}
                   height={40}
                   className="w-full h-full object-contain"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ocPczoEI-OTYBcUj1a42ib5NEctXgujau_pYMDshiHfuhMuGPyvauw_gR41AdyoXhAgBU3sccZ5KoRefHsVqXdTrTH3M8pb3rc8E7aXHmDT35MCJI-2V75g21o-mKb-b99-VguWwX62UhTk2ncpwkTYzVswiQOWC_bK05vd0FxazjB4-z4HptvfQ8UYRJiWiEmAoEusjF-CKJhYk7LmT7P4HLYSxzYTcNwpJJCl7_70HQREoUzLfFfCWn8ewvblepQ"
+                  src="/logo-footer.png"
                 />
               </div>
               <div>

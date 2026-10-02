@@ -10,8 +10,7 @@ animations).
 - **Tailwind CSS** — design tokens (colors, box-shadows) are configured in
   `tailwind.config.js` to match the original HTML exactly
 - **next/font** for Plus Jakarta Sans and JetBrains Mono
-- **next/image** for the crest/logo images (remote `lh3.googleusercontent.com`
-  images are allow-listed in `next.config.mjs`)
+- **next/image** for local kiosk and logo images in `public/`
 
 ## Getting started
 
@@ -68,10 +67,6 @@ under `frontend/`.
   to. If you want that ordering/quote-request flow rebuilt, send me the
   original section (or describe what it should contain) and I'll build it as
   a proper component with React state instead of DOM queries.
-- Images are currently pulled from the original `lh3.googleusercontent.com`
-  URLs. For a real deployment, swap these for your own assets in `/public`
-  and update the `src` props (this also lets you drop the `remotePatterns`
-  config in `next.config.mjs`).
 - The "Log In" nav link and "Explore System" button are wired to in-page
   anchors (`#login`, `#pillars`) — hook these up to real routes once you have
   auth/kiosk-config pages.

@@ -44,7 +44,7 @@ export default function AuthHeader() {
               width={40}
               height={40}
               className="w-full h-full object-contain filter drop-shadow-sm"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmFJcI9nZPkDsO54ySE-7cvSiDqc5Rp9UoHuo43_8UQW4MmXKXkTWU9xQno1rP1WwHiy7s1cB3ntQhIjygpTEnaPu3Rw6M6h7WqiNNegd8nQHkk71gxXtxD8nohXvXe0hp_oPOGjKi5WM1DMkPiiMkpkLuJchgWbM5INd45GyYcJPSaBqQ-2fTXDzlkDpCHNk9DcSVNK584opE-R1x25PJmkA8lfXaWGQmO4ay9_NUPYs8H1_WvfnTo8hTw1VAVD9gFA"
+              src="/logo.png"
             />
           </div>
           <div className="flex flex-col">
