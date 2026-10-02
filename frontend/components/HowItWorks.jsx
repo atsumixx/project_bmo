@@ -26,7 +26,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-16 sm:py-20 relative max-w-7xl mx-auto px-6 sm:px-10">
+    <section className="py-16 sm:py-20 relative max-w-7xl mx-auto px-6 sm:px-10" id="how-it-works">
       <FadeUp className="mb-12 max-w-xl space-y-2">
         <h2 className="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight">
           From movement to meaning.

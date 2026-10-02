@@ -49,13 +49,6 @@ export default function Header() {
   function handleNavClick(e, i) {
     const targetHref = NAV_LINKS[i].href;
 
-    if (targetHref === "/login" || targetHref === "/register") {
-      e.preventDefault();
-      setAuthModal({ isOpen: true, mode: targetHref === "/register" ? "register" : "login" });
-      setMobileOpen(false);
-      return;
-    }
-
     e.preventDefault();
     suppressScrollDetectionRef.current = true;
     setMobileOpen(false);
@@ -203,7 +196,6 @@ export default function Header() {
                   activeIndex === i ? "text-primary font-bold" : "text-on-surface-variant hover:text-primary"
                 }`}
               >
-                {link.icon && <span className="material-symbols-outlined text-sm">{link.icon}</span>}
                 <span>{link.label}</span>
               </a>
             ))}

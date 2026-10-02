@@ -8,6 +8,7 @@ import InteractiveDemo from "@/components/InteractiveDemo";
 import Pillars from "@/components/Pillars";
 import TechSystem from "@/components/TechSystem";
 import ImpactStats from "@/components/ImpactStats";
+import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 export default function HomePage() {
@@ -24,6 +25,7 @@ export default function HomePage() {
         <Pillars />
         <TechSystem />
         <ImpactStats />
+        <Contact />
       </main>
       <Footer />
     </>
