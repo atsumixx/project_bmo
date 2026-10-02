@@ -4,7 +4,7 @@ import FadeUp from "./FadeUp";
 // TODO: replace with your team's real details.
 const CONTACT = {
   email: "team.shield@example.edu.ph",
-  institution: "Your University / College Name",
+  institution: "FEU Roosevelt",
   program: "BS Information Technology (BSIT) — Capstone",
 };
 
