@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import FadeUp from "./FadeUp";
 import { supabase } from "@/lib/supabase";
 
@@ -247,6 +248,15 @@ export default function PreOrder() {
                 </p>
               </div>
             </FadeUp>
+
+            <p className="text-[11px] text-on-surface-variant text-center">
+              By submitting, you agree that we may use these details to respond to your request, as
+              described in our{" "}
+              <Link href="/privacy" className="text-primary font-semibold hover:underline">
+                Privacy Notice
+              </Link>
+              .
+            </p>
 
             <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
               <label htmlFor="website">Leave this field empty</label>

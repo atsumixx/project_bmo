@@ -81,7 +81,7 @@ export default function RegisterPage() {
     event.preventDefault();
 
     if (!accepted) {
-      setStatus({ type: "error", message: "You must accept the terms and conditions to continue." });
+      setStatus({ type: "error", message: "You must accept the Terms of Use and Privacy Notice to continue." });
       return;
     }
 
@@ -363,23 +363,31 @@ export default function RegisterPage() {
               ))}
             </div>
 
-            <button
-              type="button"
-              onClick={() => setAccepted((v) => !v)}
-              className="w-full flex items-start gap-3 text-left px-1"
-            >
-              <span
+            <div className="w-full flex items-start gap-3 px-1">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={accepted}
+                aria-label="Accept the terms and privacy notice"
+                onClick={() => setAccepted((v) => !v)}
                 className={`mt-0.5 w-4 h-4 flex-shrink-0 rounded-md border-2 flex items-center justify-center transition-colors ${
                   accepted ? "bg-primary border-primary text-white" : "border-outline-soft text-transparent"
                 }`}
               >
                 <span className="material-symbols-outlined text-[11px]">check</span>
-              </span>
+              </button>
               <span className="text-[11px] text-on-surface-variant leading-relaxed">
-                I accept the <span className="font-bold text-on-surface">RA 11106 (FSL Act)</span> &amp; Data
-                Privacy Act terms.
+                I have read the{" "}
+                <Link href="/privacy" className="font-bold text-primary hover:underline">
+                  Privacy Notice
+                </Link>{" "}
+                and agree to the{" "}
+                <Link href="/terms" className="font-bold text-primary hover:underline">
+                  Terms of Use
+                </Link>
+                .
               </span>
-            </button>
+            </div>
 
             {status.message ? (
               <p

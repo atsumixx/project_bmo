@@ -80,7 +80,15 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-white/40">
-          <span>© 2026 Project BMO</span>
+          <span className="flex items-center gap-4">
+            <span>© 2026 Project BMO</span>
+            <Link href="/privacy" className="hover:text-white/70 transition-colors">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-white/70 transition-colors">
+              Terms
+            </Link>
+          </span>
 
           <Link href="/#about" className="flex items-center gap-1 text-accent-cyan hover:text-white transition-colors">
             Made to bridge the gap

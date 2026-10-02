@@ -48,7 +48,7 @@ export default function Hero() {
             </div>
             <div>
               <div className="text-on-surface font-bold text-lg">0</div>
-              <div>Cloud dependency</div>
+              <div>Cloud calls for recognition</div>
             </div>
             <div>
               <div className="text-on-surface font-bold text-lg">Local</div>

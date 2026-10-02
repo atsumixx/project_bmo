@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
@@ -474,6 +475,18 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   </p>
                 )}
               </div>
+
+              <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                By creating an account you agree to the{" "}
+                <Link href="/terms" onClick={onClose} className="font-semibold text-primary hover:underline">
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link href="/privacy" onClick={onClose} className="font-semibold text-primary hover:underline">
+                  Privacy Notice
+                </Link>
+                .
+              </p>
 
               {status.message ? (
                 <p className={`text-xs font-medium ${status.type === "success" ? "text-green-600" : "text-red-500"}`}>

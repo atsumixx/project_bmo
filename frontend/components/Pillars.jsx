@@ -40,10 +40,10 @@ const PILLARS = [
   },
   {
     icon: "security",
-    title: "Zero-Cloud Privacy",
+    title: "On-Device Recognition",
     description:
-      "No video streams or facial landmarks ever leave local RAM, supporting the data-locality principles behind the Philippine Data Privacy Act of 2012.",
-    stat: "100% On-Device",
+      "Sign recognition is designed to run on the kiosk. Website accounts and pilot requests use cloud services.",
+    stat: "Local Recognition",
     statIcon: "lock",
     color: "primary",
     delay: 350,
@@ -71,7 +71,7 @@ export default function Pillars() {
           Architected for Authentic Civic Impact
         </h2>
         <p className="text-sm text-on-surface-variant leading-relaxed">
-          Engineered from the silicon up to guarantee instant responsiveness and ironclad personal data privacy.
+          Designed to support responsive interactions and privacy-conscious data handling.
         </p>
       </FadeUp>
 

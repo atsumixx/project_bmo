@@ -1,9 +1,8 @@
 import Link from "next/link";
 import FadeUp from "./FadeUp";
 
-// TODO: replace with your team's real details.
 const CONTACT = {
-  email: "team.shield@example.edu.ph",
+  email: "",
   institution: "FEU Roosevelt",
   program: "BS Information Technology (BSIT) — Capstone",
 };
@@ -12,8 +11,8 @@ const ITEMS = [
   {
     icon: "mail",
     label: "Email",
-    value: CONTACT.email,
-    href: `mailto:${CONTACT.email}`,
+    value: CONTACT.email || "Contact email pending confirmation",
+    href: CONTACT.email ? `mailto:${CONTACT.email}` : undefined,
   },
   {
     icon: "school",

@@ -8,7 +8,7 @@ const STATS = [
   { target: 100, suffix: "%", label: "On-Device Inference", sub: "Design goal: no cloud round-trip by default", color: "text-primary" },
   { target: 100, suffix: "%", label: "Offline-Capable", sub: "Design goal: no internet dependency", color: "text-secondary" },
   { target: 1, suffix: "", label: "Prototype Phase", sub: "Indoor evaluation phase for capstone testing", color: "text-primary" },
-  { target: 0, suffix: "", label: "Cloud Servers Used", sub: "Local edge processing only", color: "text-on-surface" },
+  { target: 0, suffix: "", label: "Cloud Calls for Recognition", sub: "Sign recognition runs on the kiosk", color: "text-on-surface" },
 ];
 
 function StatCounter({ target, suffix, color }) {
