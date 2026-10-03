@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
+import { checkPassword, PASSWORD_HINT } from "@/lib/authValidation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
 
@@ -43,8 +44,8 @@ export default function ResetPasswordPage() {
     event.preventDefault();
     setStatus({ type: "idle", message: "" });
 
-    if (password.length < 8) {
-      setStatus({ type: "error", message: "Password must be at least 8 characters." });
+    if (!checkPassword(password).valid) {
+      setStatus({ type: "error", message: PASSWORD_HINT });
       return;
     }
 

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import FadeUp from "@/components/FadeUp";
+import { checkPassword, PASSWORD_HINT } from "@/lib/authValidation";
 import { useAuth } from "@/lib/useAuth";
 import { supabase } from "@/lib/supabase";
 
@@ -96,8 +97,8 @@ function DashboardContent() {
     event.preventDefault();
     setPwStatus({ type: "idle", message: "" });
 
-    if (passwordForm.password.length < 8) {
-      setPwStatus({ type: "error", message: "Password must be at least 8 characters." });
+    if (!checkPassword(passwordForm.password).valid) {
+      setPwStatus({ type: "error", message: PASSWORD_HINT });
       return;
     }
 

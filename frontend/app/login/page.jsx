@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
-import { supabase } from "@/lib/supabase";
+import { signIn } from "@/lib/authActions";
 
 export default function LoginPage() {
   const [role, setRole] = useState("patron");
@@ -27,23 +27,15 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setStatus({ type: "idle", message: "" });
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: form.email.trim().toLowerCase(),
-        password: form.password,
-      });
+    const { error } = await signIn({ email: form.email, password: form.password });
 
-      if (error) {
-        throw error;
-      }
-
+    if (error) {
+      setStatus({ type: "error", message: error.message || "Unable to sign in." });
+    } else {
       setStatus({ type: "success", message: "Login successful." });
       router.push("/dashboard");
-    } catch (error) {
-      setStatus({ type: "error", message: error.message || "Unable to sign in." });
-    } finally {
-      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -74,39 +66,6 @@ export default function LoginPage() {
                 <span className="material-symbols-outlined text-sm">person_add</span>
                 Create Account
               </Link>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setRole("patron");
-                  setForm((current) => ({ ...current, role: "patron" }));
-                }}
-                className={`tactile-btn flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-semibold transition-shadow ${
-                  role === "patron"
-                    ? "bg-surface shadow-neu-inset text-primary ring-1 ring-primary/30"
-                    : "bg-surface shadow-neu-sm text-on-surface-variant"
-                }`}
-              >
-                <span className="material-symbols-outlined text-base">accessibility_new</span>
-                Citizen Patron
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setRole("teller");
-                  setForm((current) => ({ ...current, role: "teller" }));
-                }}
-                className={`tactile-btn flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-semibold transition-shadow ${
-                  role === "teller"
-                    ? "bg-surface shadow-neu-inset text-primary ring-1 ring-primary/30"
-                    : "bg-surface shadow-neu-sm text-on-surface-variant"
-                }`}
-              >
-                <span className="material-symbols-outlined text-base">badge</span>
-                Desk Teller
-              </button>
             </div>
 
             <div className="space-y-4">
@@ -213,14 +172,6 @@ export default function LoginPage() {
               <span className="text-[10px] font-mono uppercase text-on-surface-variant/70">Or</span>
               <span className="flex-1 h-px bg-outline-soft/60" />
             </div>
-
-            <button
-              type="button"
-              className="tactile-btn w-full py-3.5 rounded-2xl text-xs font-semibold text-on-surface-variant bg-surface shadow-neu-inset flex items-center justify-center gap-2"
-            >
-              <span className="material-symbols-outlined text-base">qr_code_scanner</span>
-              Tap PWD ID / QR Scanner
-            </button>
 
             <p className="text-center text-xs text-on-surface-variant">
               New citizen?{" "}

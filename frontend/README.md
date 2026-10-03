@@ -14,7 +14,7 @@ animations).
 
 ## Getting started
 
-You'll need Node.js 18.18+ installed locally. All commands below are run
+You'll need Node.js 22+ installed locally. All commands below are run
 from inside this `frontend/` folder.
 
 ```bash

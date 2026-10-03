@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
-import { supabase } from "@/lib/supabase";
+import { sendPasswordReset } from "@/lib/authActions";
 import { useResendCooldown } from "@/lib/useResendCooldown";
 
 export default function ForgotPasswordPage() {
@@ -19,10 +19,7 @@ export default function ForgotPasswordPage() {
   const [resendStatus, setResendStatus] = useState({ type: "idle", message: "" });
   const resendCooldown = useResendCooldown(15);
 
-  const sendResetEmail = (targetEmail) =>
-    supabase.auth.resetPasswordForEmail(targetEmail, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
-    });
+  const sendResetEmail = (targetEmail) => sendPasswordReset(targetEmail);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

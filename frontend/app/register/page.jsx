@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
+import PasswordStrength from "@/components/PasswordStrength";
 import { supabase } from "@/lib/supabase";
+import { checkPassword, normalizePhone, PASSWORD_HINT } from "@/lib/authValidation";
+import { signUp, resendSignupEmail } from "@/lib/authActions";
 import { useResendCooldown } from "@/lib/useResendCooldown";
 import { useAuth } from "@/lib/useAuth";
 
@@ -69,8 +72,7 @@ export default function RegisterPage() {
   const [isResending, setIsResending] = useState(false);
   const [resendStatus, setResendStatus] = useState({ type: "idle", message: "" });
   const resendCooldown = useResendCooldown(15);
-
-  const strength = Math.min(password.length / 10, 1);
+  const pw = checkPassword(password);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -81,13 +83,25 @@ export default function RegisterPage() {
     event.preventDefault();
 
     if (!accepted) {
-      setStatus({ type: "error", message: "You must accept the Terms of Use and Privacy Notice to continue." });
+      setStatus({ type: "error", message: "You must accept the terms and privacy notice to continue." });
       return;
     }
-
+    if (!pw.valid) {
+      setStatus({ type: "error", message: PASSWORD_HINT });
+      return;
+    }
     if (password !== confirmPassword) {
       setStatus({ type: "error", message: "Passwords do not match." });
       return;
+    }
+
+    let phone = "";
+    if (form.phone.trim()) {
+      phone = normalizePhone(form.phone);
+      if (!phone) {
+        setStatus({ type: "error", message: "Enter a valid PH mobile number, e.g. 917 123 4567." });
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -95,47 +109,35 @@ export default function RegisterPage() {
     setPendingEmail("");
     setResendStatus({ type: "idle", message: "" });
 
-    try {
-      const normalizedEmail = form.email.trim().toLowerCase();
-      const { data, error } = await supabase.auth.signUp({
-        email: normalizedEmail,
-        password,
-        options: {
-          data: {
-            first_name: form.firstName,
-            last_name: form.lastName,
-            phone: form.phone,
-            role,
-            fsl_mode: fslMode,
-            deaf_mode: deafMode,
-            hand_cues: handCues,
-          },
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
+    const { data, error } = await signUp({
+      email: form.email,
+      password,
+      profile: {
+        first_name: form.firstName.trim(),
+        last_name: form.lastName.trim(),
+        phone,
+        role,
+        fsl_mode: fslMode,
+        deaf_mode: deafMode,
+        hand_cues: handCues,
+      },
+    });
 
-      if (error) {
-        throw error;
-      }
-
-      const message = data.session
-        ? "Account created successfully."
-        : "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.";
-
-      setStatus({ type: "success", message });
-
-      if (data.session) {
-        router.push("/dashboard");
-      } else {
-        // Email confirmation is pending — start the resend cooldown.
-        setPendingEmail(normalizedEmail);
-        resendCooldown.start();
-      }
-    } catch (error) {
+    if (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
-    } finally {
-      setIsSubmitting(false);
+    } else if (data.session) {
+      setStatus({ type: "success", message: "Account created successfully." });
+      router.push("/dashboard");
+    } else {
+      setStatus({
+        type: "success",
+        message:
+          "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.",
+      });
+      setPendingEmail(form.email.trim().toLowerCase());
+      resendCooldown.start();
     }
+    setIsSubmitting(false);
   };
 
   const handleResend = async () => {
@@ -144,26 +146,15 @@ export default function RegisterPage() {
     setIsResending(true);
     setResendStatus({ type: "idle", message: "" });
 
-    try {
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email: pendingEmail,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
+    const { error } = await resendSignupEmail(pendingEmail);
 
-      if (error) {
-        throw error;
-      }
-
+    if (error) {
+      setResendStatus({ type: "error", message: error.message || "Unable to resend email." });
+    } else {
       setResendStatus({ type: "success", message: "Confirmation email resent." });
       resendCooldown.start();
-    } catch (error) {
-      setResendStatus({ type: "error", message: error.message || "Unable to resend email." });
-    } finally {
-      setIsResending(false);
     }
+    setIsResending(false);
   };
 
   return (
@@ -299,21 +290,7 @@ export default function RegisterPage() {
                   </button>
                 }
               />
-              <div className="flex items-center justify-between gap-3 px-1">
-                <span className="flex items-center gap-1 text-[10px] font-mono uppercase text-on-surface-variant/70">
-                  <span className="material-symbols-outlined text-xs">shield</span>
-                  Security
-                </span>
-                <div className="flex-1 h-1.5 rounded-full bg-outline-soft/60 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-primary to-accent-cyan transition-all"
-                    style={{ width: `${strength * 100}%` }}
-                  />
-                </div>
-                <span className="text-[10px] font-mono text-on-surface-variant/70">
-                  {password ? "Strong" : "Enter password"}
-                </span>
-              </div>
+              <PasswordStrength result={pw} />
             </div>
 
             <div className="p-5 rounded-2xl bg-surface shadow-neu-inset space-y-4">

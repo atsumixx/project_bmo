@@ -3,32 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getEmailHealth, checkPassword } from "@/lib/authValidation";
+import { signIn, signUp } from "@/lib/authActions";
+import PasswordStrength from "./PasswordStrength";
 import { useAuth } from "@/lib/useAuth";
-
-function getEmailHealth(email) {
-  if (!email) {
-    return { status: "idle", valid: false, message: "" };
-  }
-
-  const trimmed = email.trim().toLowerCase();
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-  if (!emailRegex.test(trimmed)) {
-    return { status: "invalid", valid: false, message: "Enter a valid email format." };
-  }
-
-  const [localPart, domain] = trimmed.split("@");
-  if (!localPart || !domain) {
-    return { status: "invalid", valid: false, message: "Email is incomplete." };
-  }
-
-  if (domain.split(".").filter(Boolean).length < 2) {
-    return { status: "invalid", valid: false, message: "Email domain is incomplete." };
-  }
-
-  return { status: "valid", valid: true, message: "Looks like a valid email." };
-}
 
 export default function AuthModal({ isOpen, mode, onClose }) {
   const [activeMode, setActiveMode] = useState(mode);
@@ -48,19 +26,9 @@ export default function AuthModal({ isOpen, mode, onClose }) {
   const { user } = useAuth();
 
   const emailCheck = getEmailHealth(email);
-
-  const passwordChecks = [
-    { label: "8+ chars", valid: password.length >= 8 },
-    { label: "Uppercase", valid: /[A-Z]/.test(password) },
-    { label: "Lowercase", valid: /[a-z]/.test(password) },
-    { label: "Number", valid: /\d/.test(password) },
-    { label: "Symbol", valid: /[^A-Za-z0-9]/.test(password) },
-  ];
-
-  const passwordStrength = password.length === 0 ? 0 : (passwordChecks.filter((check) => check.valid).length / passwordChecks.length) * 100;
-  const strengthLabel = password.length === 0 ? "No password" : passwordStrength < 50 ? "Weak" : passwordStrength < 80 ? "Good" : "Strong";
+  const pw = checkPassword(password);
   const confirmMatches = confirmPassword.length > 0 && password === confirmPassword;
-  const isPasswordReady = passwordChecks.every((check) => check.valid) && confirmMatches;
+  const isPasswordReady = pw.valid && confirmMatches;
   const isEmailReady = emailCheck.status === "valid";
 
   useEffect(() => {
@@ -106,26 +74,18 @@ export default function AuthModal({ isOpen, mode, onClose }) {
     setIsSubmitting(true);
     setStatus({ type: "idle", message: "" });
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: loginEmail.trim().toLowerCase(),
-        password: loginPassword,
-      });
+    const { error } = await signIn({ email: loginEmail, password: loginPassword });
 
-      if (error) {
-        throw error;
-      }
-
+    if (error) {
+      setStatus({ type: "error", message: error.message || "Unable to sign in." });
+    } else {
       setStatus({ type: "success", message: "Login successful." });
       window.setTimeout(() => {
         onClose();
         router.push("/dashboard");
       }, 600);
-    } catch (error) {
-      setStatus({ type: "error", message: error.message || "Unable to sign in." });
-    } finally {
-      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   const handleRegister = async () => {
@@ -133,43 +93,29 @@ export default function AuthModal({ isOpen, mode, onClose }) {
     setAwaitingConfirmation(false);
     setStatus({ type: "idle", message: "" });
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
-        password,
-        options: {
-          data: {
-            first_name: firstName,
-            last_name: lastName,
-            role: "patron",
-          },
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
+    const { data, error } = await signUp({
+      email,
+      password,
+      profile: { first_name: firstName.trim(), last_name: lastName.trim(), role: "patron" },
+    });
 
-      if (error) {
-        throw error;
-      }
-
-      const message = data.session
-        ? "Account created successfully."
-        : "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.";
-
-      setStatus({ type: "success", message });
-
-      if (data.session) {
-        window.setTimeout(() => {
-          onClose();
-          router.push("/dashboard");
-        }, 600);
-      } else {
-        setAwaitingConfirmation(true);
-      }
-    } catch (error) {
+    if (error) {
       setStatus({ type: "error", message: error.message || "Unable to create account." });
-    } finally {
-      setIsSubmitting(false);
+    } else if (data.session) {
+      setStatus({ type: "success", message: "Account created successfully." });
+      window.setTimeout(() => {
+        onClose();
+        router.push("/dashboard");
+      }, 600);
+    } else {
+      setStatus({
+        type: "success",
+        message:
+          "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.",
+      });
+      setAwaitingConfirmation(true);
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -402,38 +348,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
                   </button>
                 </div>
 
-                <div className="space-y-2 pt-1">
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                    {passwordChecks.map((check) => (
-                      <span
-                        key={check.label}
-                        className={`rounded-full border px-2 py-0.5 text-[9px] font-mono font-semibold ${
-                          check.valid
-                            ? "border-primary/30 bg-primary/10 text-primary"
-                            : "border-outline-soft/60 bg-surface text-on-surface-variant"
-                        }`}
-                      >
-                        {check.label}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-outline-soft/60">
-                      <div
-                        className={`h-full rounded-full transition-all ${
-                          passwordStrength < 50
-                            ? "bg-red-400"
-                            : passwordStrength < 80
-                              ? "bg-amber-400"
-                              : "bg-primary"
-                        }`}
-                        style={{ width: `${passwordStrength}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] font-mono font-semibold text-on-surface-variant">{strengthLabel}</span>
-                  </div>
-                </div>
+                <PasswordStrength result={pw} />
               </div>
 
               <div className="space-y-2">

@@ -18,6 +18,8 @@ once the backend gets real code.
 
 ## Frontend
 
+Requirements: Node.js 22+.
+
 ```bash
 cd frontend
 npm install
