@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
+import PasswordStrength from "@/components/PasswordStrength";
 import { checkPassword, PASSWORD_HINT } from "@/lib/authValidation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
@@ -11,10 +12,16 @@ import { useAuth } from "@/lib/useAuth";
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { user, loading } = useAuth();
+
+  const pw = checkPassword(password);
+  const confirmMatches = confirmPassword.length > 0 && password === confirmPassword;
+  const isReady = pw.valid && confirmMatches;
 
   if (loading) {
     return (
@@ -44,7 +51,7 @@ export default function ResetPasswordPage() {
     event.preventDefault();
     setStatus({ type: "idle", message: "" });
 
-    if (!checkPassword(password).valid) {
+    if (!pw.valid) {
       setStatus({ type: "error", message: PASSWORD_HINT });
       return;
     }
@@ -68,6 +75,14 @@ export default function ResetPasswordPage() {
     setIsSubmitting(false);
   };
 
+  const eyeButton = (visible, toggle) => (
+    <button type="button" onClick={toggle} className="text-on-surface-variant/70 hover:text-primary">
+      <span className="material-symbols-outlined text-base">
+        {visible ? "visibility_off" : "visibility"}
+      </span>
+    </button>
+  );
+
   return (
     <>
       <AuthHeader />
@@ -81,23 +96,31 @@ export default function ResetPasswordPage() {
               <h1 className="text-xl font-bold text-on-surface tracking-tight">Set a new password</h1>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <AuthField
                 icon="lock"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="New password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 autoComplete="new-password"
+                endAdornment={eyeButton(showPassword, () => setShowPassword((v) => !v))}
               />
               <AuthField
                 icon="lock_reset"
-                type="password"
+                type={showConfirm ? "text" : "password"}
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 autoComplete="new-password"
+                endAdornment={eyeButton(showConfirm, () => setShowConfirm((v) => !v))}
               />
+              <PasswordStrength result={pw} />
+              {confirmPassword && (
+                <p className={`text-[10px] font-mono ${confirmMatches ? "text-primary" : "text-red-500"}`}>
+                  {confirmMatches ? "Passwords match." : "Passwords do not match."}
+                </p>
+              )}
             </div>
 
             {status.message && (
@@ -108,8 +131,8 @@ export default function ResetPasswordPage() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="tactile-btn w-full py-3.5 rounded-2xl text-sm font-bold text-white bg-primary shadow-neu-sm disabled:opacity-70"
+              disabled={isSubmitting || !isReady}
+              className="tactile-btn w-full py-3.5 rounded-2xl text-sm font-bold text-white bg-primary shadow-neu-sm disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Updating…" : "Update password"}
             </button>

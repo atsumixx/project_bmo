@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AuthHeader from "@/components/AuthHeader";
 import AuthField from "@/components/AuthField";
 import FadeUp from "@/components/FadeUp";
+import PasswordStrength from "@/components/PasswordStrength";
 import { checkPassword, PASSWORD_HINT } from "@/lib/authValidation";
 import { useAuth } from "@/lib/useAuth";
 import { supabase } from "@/lib/supabase";
@@ -25,6 +26,8 @@ function DashboardContent() {
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "" });
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSaving, setIsSaving] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ password: "", confirm: "" });
   const [pwStatus, setPwStatus] = useState({ type: "idle", message: "" });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -115,10 +118,25 @@ function DashboardContent() {
     } else {
       setPwStatus({ type: "success", message: "Password updated." });
       setPasswordForm({ password: "", confirm: "" });
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
     }
 
     setIsChangingPassword(false);
   };
+
+  const pw = checkPassword(passwordForm.password);
+  const confirmMatches =
+    passwordForm.confirm.length > 0 && passwordForm.password === passwordForm.confirm;
+  const isPasswordReady = pw.valid && confirmMatches;
+
+  const eyeButton = (visible, toggle) => (
+    <button type="button" onClick={toggle} className="text-on-surface-variant/70 hover:text-primary">
+      <span className="material-symbols-outlined text-base">
+        {visible ? "visibility_off" : "visibility"}
+      </span>
+    </button>
+  );
 
   const firstName = user.user_metadata?.first_name || "there";
   const role = user.user_metadata?.role || "patron";
@@ -263,21 +281,35 @@ function DashboardContent() {
             <form onSubmit={handleChangePassword} className="p-8 rounded-3xl bg-surface shadow-neu border border-white/70 space-y-5">
               <p className="text-xs text-on-surface-variant">Choose a new password for your account.</p>
 
-              <AuthField
-                icon="lock"
-                type="password"
-                placeholder="New password"
-                value={passwordForm.password}
-                onChange={(event) => setPasswordForm((current) => ({ ...current, password: event.target.value }))}
-              />
+              <div className="space-y-3">
+                <AuthField
+                  icon="lock"
+                  type={showNewPassword ? "text" : "password"}
+                  placeholder="New password"
+                  value={passwordForm.password}
+                  onChange={(event) => setPasswordForm((current) => ({ ...current, password: event.target.value }))}
+                  autoComplete="new-password"
+                  endAdornment={eyeButton(showNewPassword, () => setShowNewPassword((v) => !v))}
+                />
 
-              <AuthField
-                icon="lock_reset"
-                type="password"
-                placeholder="Confirm new password"
-                value={passwordForm.confirm}
-                onChange={(event) => setPasswordForm((current) => ({ ...current, confirm: event.target.value }))}
-              />
+                <AuthField
+                  icon="lock_reset"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm new password"
+                  value={passwordForm.confirm}
+                  onChange={(event) => setPasswordForm((current) => ({ ...current, confirm: event.target.value }))}
+                  autoComplete="new-password"
+                  endAdornment={eyeButton(showConfirmPassword, () => setShowConfirmPassword((v) => !v))}
+                />
+
+                <PasswordStrength result={pw} />
+
+                {passwordForm.confirm && (
+                  <p className={`text-[10px] font-mono ${confirmMatches ? "text-primary" : "text-red-500"}`}>
+                    {confirmMatches ? "Passwords match." : "Passwords do not match."}
+                  </p>
+                )}
+              </div>
 
               {pwStatus.message && (
                 <p className={`text-xs font-medium ${pwStatus.type === "success" ? "text-green-600" : "text-red-500"}`}>
@@ -287,8 +319,8 @@ function DashboardContent() {
 
               <button
                 type="submit"
-                disabled={isChangingPassword}
-                className="tactile-btn w-full py-3 rounded-2xl text-sm font-bold text-white bg-primary shadow-neu-sm disabled:opacity-70"
+                disabled={isChangingPassword || !isPasswordReady}
+                className="tactile-btn w-full py-3 rounded-2xl text-sm font-bold text-white bg-primary shadow-neu-sm disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isChangingPassword ? "Updating…" : "Update password"}
               </button>

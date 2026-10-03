@@ -111,7 +111,7 @@ export default function AuthModal({ isOpen, mode, onClose }) {
       setStatus({
         type: "success",
         message:
-          "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.",
+          "Check your email for the confirmation link.",
       });
       setAwaitingConfirmation(true);
     }

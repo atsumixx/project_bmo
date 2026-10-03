@@ -43,7 +43,7 @@ export default function RegisterPage() {
 
   // Once we've sent the confirmation email, we track the address it went
   // to (so "resend" doesn't depend on the form still being filled in) and
-  // offer a resend button on a doubling cooldown (15s, 30s, 60s, ...).
+  // offer a resend button on a doubling cooldown (60s, 120s, 240s, ...).
   const [pendingEmail, setPendingEmail] = useState("");
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function RegisterPage() {
   }, [pendingEmail]);
   const [isResending, setIsResending] = useState(false);
   const [resendStatus, setResendStatus] = useState({ type: "idle", message: "" });
-  const resendCooldown = useResendCooldown(15);
+  const resendCooldown = useResendCooldown(60);
   const pw = checkPassword(password);
 
   const handleChange = (event) => {
@@ -132,7 +132,7 @@ export default function RegisterPage() {
       setStatus({
         type: "success",
         message:
-          "Check your email and click the confirmation link. This tab will take you to your dashboard when you confirm; you can close the email tab afterward.",
+          "Check your email for the confirmation link.",
       });
       setPendingEmail(form.email.trim().toLowerCase());
       resendCooldown.start();

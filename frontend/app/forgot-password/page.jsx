@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
   const [sentTo, setSentTo] = useState("");
   const [isResending, setIsResending] = useState(false);
   const [resendStatus, setResendStatus] = useState({ type: "idle", message: "" });
-  const resendCooldown = useResendCooldown(15);
+  const resendCooldown = useResendCooldown(60);
 
   const sendResetEmail = (targetEmail) => sendPasswordReset(targetEmail);
 

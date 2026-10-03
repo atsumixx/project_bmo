@@ -37,8 +37,23 @@ export function resendSignupEmail(email) {
   });
 }
 
-export function sendPasswordReset(email) {
-  return supabase.auth.resetPasswordForEmail(clean(email), {
-    redirectTo: `${origin()}/auth/callback?next=/reset-password`,
+export async function sendPasswordReset(email) {
+  const normalized = clean(email);
+
+  const { data: exists, error: lookupError } = await supabase.rpc("email_exists", {
+    check_email: normalized,
+  });
+
+  if (lookupError) return { data: null, error: lookupError };
+
+  if (!exists) {
+    return {
+      data: null,
+      error: new Error("No account found with that email address."),
+    };
+  }
+
+  return supabase.auth.resetPasswordForEmail(normalized, {
+    redirectTo: `${origin()}/reset-password`,
   });
 }
